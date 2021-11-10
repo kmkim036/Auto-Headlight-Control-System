@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Project version="2G - 1.7.6" name="stm103datong">
+  <Target name="stm103datong" isCurrent="1">
+    <Device manufacturerId="9" manufacturerName="ST" chipId="305" chipName="STM32F103C8" boardId="" boardName=""/>
+    <BuildOption>
+      <Compile>
+        <Option name="OptimizationLevel" value="0"/>
+        <Option name="UseFPU" value="0"/>
+        <Option name="UserEditCompiler" value=""/>
+        <Option name="SupportCPlusplus" value="1"/>
+        <Option name="CompileBeforeDebug" value="0"/>
+        <Includepaths>
+          <Includepath path="."/>
+        </Includepaths>
+        <DefinedSymbols>
+          <Define name="USE_STDPERIPH_DRIVER"/>
+          <Define name="__ASSEMBLY__"/>
+          <Define name="STM32F103C8"/>
+          <Define name="STM32F10X_MD"/>
+        </DefinedSymbols>
+      </Compile>
+      <Link useDefault="0">
+        <Option name="DiscardUnusedSection" value="0"/>
+        <Option name="UserEditLinkder" value=""/>
+        <Option name="UseMemoryLayout" value="1"/>
+        <Option name="nostartfiles" value="0"/>
+        <Option name="LTO" value="0"/>
+        <Option name="IsNewStartupCode" value="1"/>
+        <Option name="Library" value="Use base C Library"/>
+        <Option name="UserEditLinker" value=""/>
+        <LinkedLibraries/>
+        <MemoryAreas debugInFlashNotRAM="1">
+          <Memory name="IROM1" type="ReadOnly" size="0x00010000" startValue="0x08000000"/>
+          <Memory name="IRAM1" type="ReadWrite" size="0x00005000" startValue="0x20000000"/>
+          <Memory name="IROM2" type="ReadOnly" size="" startValue=""/>
+          <Memory name="IRAM2" type="ReadWrite" size="" startValue=""/>
+        </MemoryAreas>
+        <LocateLinkFile path="../../../../../../../../../../coocox/coide/configuration/programdata/stm103datong/arm-gcc-link.ld" type="0"/>
+      </Link>
+      <Output>
+        <Option name="OutputFileType" value="0"/>
+        <Option name="Path" value="./"/>
+        <Option name="Name" value="stm103rct6"/>
+        <Option name="HEX" value="1"/>
+        <Option name="BIN" value="1"/>
+      </Output>
+      <User>
+        <UserRun name="Run#1" type="Before" checked="0" value=""/>
+        <UserRun name="Run#1" type="After" checked="0" value=""/>
+      </User>
+    </BuildOption>
+    <DebugOption>
+      <Option name="org.coocox.codebugger.gdbjtag.core.adapter" value="ST-Link"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.debugMode" value="SWD"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.clockDiv" value="1M"/>
+      <Option name="org.coocox.codebugger.gdbjtag.corerunToMain" value="1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.jlinkgdbserver" value=""/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.userDefineGDBScript" value=""/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.targetEndianess" value="0"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.jlinkResetMode" value="Type 0: Normal"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.resetMode" value="SYSRESETREQ"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.ifSemihost" value="0"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.ifCacheRom" value="0"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.ipAddress" value="127.0.0.1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.portNumber" value="2009"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.autoDownload" value="1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.verify" value="1"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.downloadFuction" value="Erase Effected"/>
+      <Option name="org.coocox.codebugger.gdbjtag.core.defaultAlgorithm" value="STM32F10x_MD_64.elf"/>
+      <Option name="org.coocox.codebugger.gdbjtag.coredebugInRamInitCommands" value="cd C:/CooCox/CoIDE/workspace/stm103datong/stm103datong/Debug/bin restore stm103c8t6.elf set {unsigned int*}0xE000ED08 = 0x20000000 set $sp = {unsigned int*}0x20000000 set $pc = {unsigned int*}0x20000004 "/>
+    </DebugOption>
+    <ExcludeFile/>
+  </Target>
+  <Components path="./">
+    <Component id="50" name="CMSIS core" path="" type="2"/>
+    <Component id="440" name="RCC" path="" type="2"/>
+    <Component id="442" name="PWR" path="" type="2"/>
+    <Component id="443" name="BKP" path="" type="2"/>
+    <Component id="444" name="GPIO" path="" type="2"/>
+    <Component id="448" name="RTC" path="" type="2"/>
+    <Component id="455" name="FLASH" path="" type="2"/>
+  </Components>
+  <Files>
+    <File name="example/ether/ksz8794cnxSwitch.c" path="example/ether/ksz8794cnxSwitch.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_can.h" path="stm_lib/inc/stm32f10x_can.h" type="1"/>
+    <File name="example/lwip/include/httpd_structs.h" path="example/tdpipstack/lwip/include/httpd_structs.h" type="1"/>
+    <File name="example/commun/Amis30621_Tmc211_LinStepper.c" path="../stm103/example/Amis30621_Tmc211_LinStepper.c" type="1"/>
+    <File name="example/sensor/stmL3GGD20HGyro.c" path="example/sensor/stmL3GGD20HGyro.c" type="1"/>
+    <File name="example/yLib/yI2cDrv.c" path="example/yLib/yI2cDrv.c" type="1"/>
+    <File name="example/usb/src/usb_endp.c" path="example/usb/src/usb_endp.c" type="1"/>
+    <File name="example/lwip/include/err.h" path="example/tdpipstack/lwip/include/err.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_pwr.h" path="stm_lib/inc/stm32f10x_pwr.h" type="1"/>
+    <File name="example/lwip/include/dhcp.h" path="example/tdpipstack/lwip/include/dhcp.h" type="1"/>
+    <File name="example/display/stmSpiSt7789_Clock_IPS240X240LCD.c" path="example/display/stmSpiSt7789_Clock_IPS240X240LCD.c" type="1"/>
+    <File name="example/lwip/include/memp_std.h" path="example/tdpipstack/lwip/include/memp_std.h" type="1"/>
+    <File name="example/usb/src/usb_core.c" path="example/usb/src/usb_core.c" type="1"/>
+    <File name="cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
+    <File name="example/yLib/eth/stm32f1x7_eth_bsp.c" path="example/yLib/eth/stm32f1x7_eth_bsp.c" type="1"/>
+    <File name="example/ether/w5500.c" path="example/ether/w5500.c" type="1"/>
+    <File name="example/lwip/src" path="" type="2"/>
+    <File name="example/ptpstm/include/datatypes.h" path="example/ptpstm/include/datatypes.h" type="1"/>
+    <File name="example/yLib/cmdline.h" path="example/yLib/cmdline.h" type="1"/>
+    <File name="example/sensor/stmAdxl345Accel.c" path="example/sensor/stmSdxl345Accel.c" type="1"/>
+    <File name="cmsis_boot/stm32f10x_conf.h" path="cmsis_boot/stm32f10x_conf.h" type="1"/>
+    <File name="example/display/stmSpiSt7789_Gauge_IPS240X240LCD.c" path="example/display/stmSpiSt7789_Gauge_IPS240X240LCD.c" type="1"/>
+    <File name="example/lwip/src/core/ipv4/ip_addr.c" path="example/tdpipstack/lwip/src/core/ipv4/ip_addr.c" type="1"/>
+    <File name="example/usb/inc/usb_type.h" path="example/usb/inc/usb_type.h" type="1"/>
+    <File name="example/avionics/MarkerBeacon" path="" type="2"/>
+    <File name="example/lwip/include/cc.h" path="example/tdpipstack/lwip/include/cc.h" type="1"/>
+    <File name="example/motor/stmDrv8825_A4988stepper.c" path="example/motor/stmDrv8825_A4988stepper.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_spi.h" path="stm_lib/inc/stm32f10x_spi.h" type="1"/>
+    <File name="example/yLib/inet" path="" type="2"/>
+    <File name="example/yLib/eth/include/stm32f1x7_eth_bsp.h" path="example/yLib/eth/include/stm32f1x7_eth_bsp.h" type="1"/>
+    <File name="example/audio/stmWm8731Drv.c" path="example/audio/stmWm8731Drv.c" type="1"/>
+    <File name="example/lwip/src/loopif.c" path="example/tdpipstack/lwip/src/loopif.c" type="1"/>
+    <File name="example/lwip/include/mem.h" path="example/tdpipstack/lwip/include/mem.h" type="1"/>
+    <File name="example/lwip/src/core/tcp_out.c" path="example/tdpipstack/lwip/src/core/tcp_out.c" type="1"/>
+    <File name="example/usb/src/usb_pwr.c" path="example/usb/src/usb_pwr.c" type="1"/>
+    <File name="example/genio/blinky.c" path="example/genio/blinky.c" type="1"/>
+    <File name="example/motor/stmPid.c" path="example/motor/stmPid.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_gpio.c" path="stm_lib/src/stm32f10x_gpio.c" type="1"/>
+    <File name="example/clockgen/ds3231rtc.c" path="example/clockgen/ds3231rtc.c" type="1"/>
+    <File name="example/ptpstm/sys_time_timer.c" path="example/ptpstm/sys_time_timer.c" type="1"/>
+    <File name="example/ptpstm/servo.c" path="example/ptpstm/servo.c" type="1"/>
+    <File name="example/lwip/src/core/snmp/msg_out.c" path="example/tdpipstack/lwip/src/core/snmp/msg_out.c" type="1"/>
+    <File name="example/ether/genMdio.c" path="example/ether/genMdio.c" type="1"/>
+    <File name="cmsis_boot/system_stm32f10x.c" path="cmsis_boot/system_stm32f10x.c" type="1"/>
+    <File name="example/yLib/eth/ethernetif.c" path="example/yLib/eth/ethernetif.c" type="1"/>
+    <File name="example/proj/LinWithStepperProj" path="" type="2"/>
+    <File name="example/sensor/si7021_Hum.c" path="example/sensor/si7021_Hum.c" type="1"/>
+    <File name="example/lwip/src/core/snmp/asn1_enc.c" path="example/tdpipstack/lwip/src/core/snmp/asn1_enc.c" type="1"/>
+    <File name="example/proj/CanWithStepperProj" path="" type="2"/>
+    <File name="example/commun/stmLin.c" path="example/commun/stmLin.c" type="1"/>
+    <File name="example/usb/inc/usb_desc.h" path="example/usb/inc/usb_desc.h" type="1"/>
+    <File name="example/motor/Bldc_Drv11873Loop.c" path="example/motor/Bldc_Drv11873Loop.c" type="1"/>
+    <File name="example/ether/ip101_simpleLoop.c" path="example/ether/ip101_simpleLoop.c" type="1"/>
+    <File name="example/proj/LinWithStepperProj/LinWithStepperProj.c" path="example/proj/LinWithStepperProj/LinWithStepperProj.c" type="1"/>
+    <File name="example/yLib/eth/include/ethopts.h" path="example/yLib/eth/include/ethopts.h" type="1"/>
+    <File name="example/ether/include/ymdio.h" path="example/ether/include/ymdio.h" type="1"/>
+    <File name="example/lwip/include/snmp_structs.h" path="example/tdpipstack/lwip/include/snmp_structs.h" type="1"/>
+    <File name="example/usb/inc/usb_core.h" path="example/usb/inc/usb_core.h" type="1"/>
+    <File name="cmsis_boot/hw_config.h" path="example/usb/inc/hw_config.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_dma.c" path="stm_lib/src/stm32f10x_dma.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_lib.c" path="stm_lib/src/stm32f10x_lib.c" type="1"/>
+    <File name="example/avionics/selcal" path="" type="2"/>
+    <File name="example/lwip/include/netbuf.h" path="example/tdpipstack/lwip/include/netbuf.h" type="1"/>
+    <File name="example/clockgen/ad9833_stm.c" path="example/clockgen/ad9833_stm.c" type="1"/>
+    <File name="example/wireless/yGps.c" path="example/wireless/yGps.c" type="1"/>
+    <File name="example/yLib/eth/include/ethernetif.h" path="example/yLib/eth/include/ethernetif.h" type="1"/>
+    <File name="example/display/stmSpiSt7735Hy18LCD.c" path="example/display/stmSpiSt7735Hy18LCD.c" type="1"/>
+    <File name="example/lwip/include/igmp.h" path="example/tdpipstack/lwip/include/igmp.h" type="1"/>
+    <File name="example/yLib" path="" type="2"/>
+    <File name="example/sensor/stmL3G4200Gyro.c" path="example/sensor/stmL3G4200Gyro.c" type="1"/>
+    <File name="example/usb" path="" type="2"/>
+    <File name="cmsis_boot/system_stm32f10x.h" path="cmsis_boot/system_stm32f10x.h" type="1"/>
+    <File name="example/motor/stmMcp8063BldcLoop.c" path="example/motor/stmMcp8063BldcLoop.c" type="1"/>
+    <File name="example/lwip/include/sio.h" path="example/tdpipstack/lwip/include/sio.h" type="1"/>
+    <File name="example/lwip/include/api.h" path="example/tdpipstack/lwip/include/api.h" type="1"/>
+    <File name="example/ptpstm/include/ptpd.h" path="example/ptpstm/include/ptpd.h" type="1"/>
+    <File name="stm_lib/src/stm32f107_eth.c" path="stm_lib/src/stm32f107_eth.c" type="1"/>
+    <File name="example/usb/inc/usb_int.h" path="example/usb/inc/usb_int.h" type="1"/>
+    <File name="example/yLib/cmdline.c" path="example/yLib/cmdline.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_i2c.c" path="stm_lib/src/stm32f10x_i2c.c" type="1"/>
+    <File name="example/usb/inc/usb_def.h" path="example/usb/inc/usb_def.h" type="1"/>
+    <File name="example/display/stmIL9163LCD_Para8.c" path="example/display/stmIL9163LCD_Para8.c" type="1"/>
+    <File name="example/proj" path="" type="2"/>
+    <File name="example/lwip/include/netdb.h" path="example/tdpipstack/lwip/include/netdb.h" type="1"/>
+    <File name="example/genio/stmFx6408i2cGpio.c" path="example/genio/stmFx6408i2cGpio.c" type="1"/>
+    <File name="example/lwip/include/init.h" path="example/tdpipstack/lwip/include/init.h" type="1"/>
+    <File name="example/motor/Bldc_Drv8313Loop.c" path="example/motor/Bldc_Drv8313Loop.c" type="1"/>
+    <File name="example/lwip/include/slipif.h" path="example/tdpipstack/lwip/include/slipif.h" type="1"/>
+    <File name="example/lwip/src/core/ipv4" path="" type="2"/>
+    <File name="main.c" path="main.c" type="1"/>
+    <File name="example/lwip/src/core/netconf.c" path="example/tdpipstack/lwip/src/core/netconf.c" type="1"/>
+    <File name="example/lwip/include/tcp.h" path="example/tdpipstack/lwip/include/tcp.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_lib.h" path="stm_lib/inc/stm32f10x_lib.h" type="1"/>
+    <File name="example/usb/inc/usb_prop.h" path="example/usb/inc/usb_prop.h" type="1"/>
+    <File name="stm_lib/inc/stm32f107_eth.h" path="stm_lib/inc/stm32f107_eth.h" type="1"/>
+    <File name="example/audio/stmDacLoop.c" path="example/audio/stmDacLoop.c" type="1"/>
+    <File name="example/lwip/src/core/sys.c" path="example/tdpipstack/lwip/src/core/sys.c" type="1"/>
+    <File name="example/usb/src/usb_prop.c" path="example/usb/src/usb_prop.c" type="1"/>
+    <File name="example/display/xpt2046TouchSensor.c" path="example/display/xpt2046TouchSensor.c" type="1"/>
+    <File name="example/lwip/src/core/ipv4/inet.c" path="example/tdpipstack/lwip/src/core/ipv4/inet.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_tim.h" path="stm_lib/inc/stm32f10x_tim.h" type="1"/>
+    <File name="example/lwip/src/core/raw.c" path="example/tdpipstack/lwip/src/core/raw.c" type="1"/>
+    <File name="cmsis_boot" path="" type="2"/>
+    <File name="example/display/stmSpiSt7789_IPS240X240LCD.c" path="example/display/stmSpiSt7789_IPS240X240LCD.c" type="1"/>
+    <File name="example/lwip/src/core/stats.c" path="example/tdpipstack/lwip/src/core/stats.c" type="1"/>
+    <File name="example/audio/kt0803_fmTx.c" path="example/audio/kt0803_fmTx.c" type="1"/>
+    <File name="example/lwip/include/snmp_asn1.h" path="example/tdpipstack/lwip/include/snmp_asn1.h" type="1"/>
+    <File name="example/lwip/src/core/ipv4/autoip.c" path="example/tdpipstack/lwip/src/core/ipv4/autoip.c" type="1"/>
+    <File name="example/ether/include/ksz8794.h" path="example/ether/include/ksz8794.h" type="1"/>
+    <File name="example/yLib/eth/mdio407_107.c" path="example/yLib/eth/mdio407_107.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_spi.c" path="stm_lib/src/stm32f10x_spi.c" type="1"/>
+    <File name="example/ether/include/Enc28J60.h" path="example/ether/include/Enc28J60.h" type="1"/>
+    <File name="example/ptpstm/ptpd.c" path="example/ptpstm/ptpd.c" type="1"/>
+    <File name="example/ptpstm/net.c" path="example/ptpstm/net.c" type="1"/>
+    <File name="example/lwip/include/arch.h" path="example/tdpipstack/lwip/include/arch.h" type="1"/>
+    <File name="example/display/stmWs2812_RGBled.c" path="example/display/stmWs2812_RGBled.c" type="1"/>
+    <File name="example/usb/inc/usb_sil.h" path="example/usb/inc/usb_sil.h" type="1"/>
+    <File name="example" path="" type="2"/>
+    <File name="example/clockgen/si5328.h" path="example/clockgen/si5328.h" type="1"/>
+    <File name="example/lwip/src/core/init.c" path="example/tdpipstack/lwip/src/core/init.c" type="1"/>
+    <File name="example/avionics/tca8418_mcdu.c" path="example/avionics/tca8418_mcdu.c" type="1"/>
+    <File name="example/lwip/src/api/netdb.c" path="example/tdpipstack/lwip/src/api/netdb.c" type="1"/>
+    <File name="example/lwip/src/etharp.c" path="example/tdpipstack/lwip/src/etharp.c" type="1"/>
+    <File name="example/audio/stmTea5767Drv.c" path="example/audio/stmTea5767Drv.c" type="1"/>
+    <File name="example/audio/stmMCP4725DACi2c.c" path="example/audio/stmMCP4725DACi2c.c" type="1"/>
+    <File name="example/wireless" path="" type="2"/>
+    <File name="stm_lib/src/stm32f10x_usart.c" path="stm_lib/src/stm32f10x_usart.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_rtc.h" path="stm_lib/inc/stm32f10x_rtc.h" type="1"/>
+    <File name="example/yLib/yUtil.c" path="example/yLib/yUtil.c" type="1"/>
+    <File name="example/lwip/include/api_msg.h" path="example/tdpipstack/lwip/include/api_msg.h" type="1"/>
+    <File name="example/sensor/pm2008mI2C.c" path="example/sensor/pm2008mI2C.c" type="1"/>
+    <File name="example/ptpstm/include/constants.h" path="example/ptpstm/include/constants.h" type="1"/>
+    <File name="example/lwip/include/opt.h" path="example/tdpipstack/lwip/include/opt.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_pwr.c" path="stm_lib/src/stm32f10x_pwr.c" type="1"/>
+    <File name="example/lwip/include/etharp.h" path="example/tdpipstack/lwip/include/etharp.h" type="1"/>
+    <File name="example/ether/include" path="" type="2"/>
+    <File name="example/lwip/src/core/tcp.c" path="example/tdpipstack/lwip/src/core/tcp.c" type="1"/>
+    <File name="example/ether/include/ip175d.h" path="example/ether/include/ip175d.h" type="1"/>
+    <File name="example/sensor/dustSensor.c" path="example/sensor/dustSensor.c" type="1"/>
+    <File name="example/usb/src" path="" type="2"/>
+    <File name="example/yLib/yStepper.c" path="example/yLib/yStepper.c" type="1"/>
+    <File name="example/ether/stmMdioBitBang.c" path="example/ether/stmMdioBitBang.c" type="1"/>
+    <File name="example/clockgen/isl1208.c" path="example/clockgen/isl1208.c" type="1"/>
+    <File name="example/genio" path="" type="2"/>
+    <File name="example/usb/inc/usb_istr.h" path="example/usb/inc/usb_istr.h" type="1"/>
+    <File name="example/lwip/src/core/ipv4/icmp.c" path="example/tdpipstack/lwip/src/core/ipv4/icmp.c" type="1"/>
+    <File name="example/lwip/include/ppp_oe.h" path="example/tdpipstack/lwip/include/ppp_oe.h" type="1"/>
+    <File name="example/clockgen" path="" type="2"/>
+    <File name="example/usb/inc/usb_conf.h" path="example/usb/inc/usb_conf.h" type="1"/>
+    <File name="example/lwip/include/epstruct.h" path="example/tdpipstack/lwip/include/epstruct.h" type="1"/>
+    <File name="example/lwip/include/stats.h" path="example/tdpipstack/lwip/include/stats.h" type="1"/>
+    <File name="example/lwip/src/core/snmp/msg_in.c" path="example/tdpipstack/lwip/src/core/snmp/msg_in.c" type="1"/>
+    <File name="example/lwip/src/core/tcp_in.c" path="example/tdpipstack/lwip/src/core/tcp_in.c" type="1"/>
+    <File name="example/genio/stmMCP23008i2cGpio.c" path="example/genio/stmMCP23008i2cGpio.c" type="1"/>
+    <File name="example/lwip/include/raw.h" path="example/tdpipstack/lwip/include/raw.h" type="1"/>
+    <File name="example/usb/src/usb_sil.c" path="example/usb/src/usb_sil.c" type="1"/>
+    <File name="example/lwip/src/core/mem.c" path="example/tdpipstack/lwip/src/core/mem.c" type="1"/>
+    <File name="example/lwip" path="" type="2"/>
+    <File name="example/ptpstm/msg.c" path="example/ptpstm/msg.c" type="1"/>
+    <File name="example/lwip/src/core" path="" type="2"/>
+    <File name="example/sensor/stmTC77spi.c" path="example/sensor/stmTC77spi.c" type="1"/>
+    <File name="example/wireless/stm433MHz.c" path="example/wireless/stm433MHz.c" type="1"/>
+    <File name="example/display/stmHt16K33Loop.c" path="example/display/stmHt16K33Loop.c" type="1"/>
+    <File name="example/wireless/stmNRFspi.c" path="example/wireless/stmNRFspi.c" type="1"/>
+    <File name="example/usb/src/usb_init.c" path="example/usb/src/usb_init.c" type="1"/>
+    <File name="example/lwip/include/udp.h" path="example/tdpipstack/lwip/include/udp.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_rcc.h" path="stm_lib/inc/stm32f10x_rcc.h" type="1"/>
+    <File name="example/commun/stmDtmfLoop.c" path="example/commun/stmDtmfLoop.c" type="1"/>
+    <File name="example/display/stmSpiGC9A01RoundLCD.c" path="example/display/stmSpiGC9A01RoundLCD.c" type="1"/>
+    <File name="example/lwip/include/def.h" path="example/tdpipstack/lwip/include/def.h" type="1"/>
+    <File name="example/display/yLcdInc.h" path="example/yLcdInc.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_systick.h" path="stm_lib/inc/stm32f10x_systick.h" type="1"/>
+    <File name="example/lwip/src/core/snmp/mib2.c" path="example/tdpipstack/lwip/src/core/snmp/mib2.c" type="1"/>
+    <File name="example/display/yLcdLib.c" path="example/display/yLcdLib.c" type="1"/>
+    <File name="example/avionics" path="" type="2"/>
+    <File name="example/lwip/include/autoip.h" path="example/tdpipstack/lwip/include/autoip.h" type="1"/>
+    <File name="stm_lib/inc" path="" type="2"/>
+    <File name="example/motor/stmMotorUnipolar.c" path="example/motor/stmMotorUnipolar.c" type="1"/>
+    <File name="example/display" path="" type="2"/>
+    <File name="example/usb/inc/usb_lib.h" path="example/usb/inc/usb_lib.h" type="1"/>
+    <File name="example/lwip/include/httpd.h" path="example/tdpipstack/lwip/include/httpd.h" type="1"/>
+    <File name="example/usb/usbvcpLoop.c" path="example/usb/usbvcpLoop.c" type="1"/>
+    <File name="example/yLib/yCan.h" path="example/yLib/yCan.h" type="1"/>
+    <File name="example/yLib/inet/inet.h" path="example/yLib/inet/inet.h" type="1"/>
+    <File name="example/yLib/err.h" path="example/yLib/err.h" type="1"/>
+    <File name="example/lwip/include/netifapi.h" path="example/tdpipstack/lwip/include/netifapi.h" type="1"/>
+    <File name="example/lwip/src/api/err.c" path="example/tdpipstack/lwip/src/api/err.c" type="1"/>
+    <File name="example/usb/inc/usb_pwr.h" path="example/usb/inc/usb_pwr.h" type="1"/>
+    <File name="example/common/stmPcf8574.c" path="example/common/stmPcf8574.c" type="1"/>
+    <File name="example/motor/tb6612MotorLoop.c" path="example/motor/tb6612MotorLoop.c" type="1"/>
+    <File name="example/yLib/eth/include/ymdio.h" path="example/yLib/eth/include/ymdio.h" type="1"/>
+    <File name="example/sensor/stmQmc5883Compass.c" path="example/sensor/stmQmc5883Compass.c" type="1"/>
+    <File name="example/lwip/include/lwipopts.h" path="example/tdpipstack/lwip/include/lwipopts.h" type="1"/>
+    <File name="example/sensor/ap3216LightSensor.c" path="example/sensor/ap3216LightSensor.c" type="1"/>
+    <File name="example/yLib/yQeiDrv.c" path="example/yLib/yQeiDrv.c" type="1"/>
+    <File name="example/lwip/src/core/dns.c" path="example/tdpipstack/lwip/src/core/dns.c" type="1"/>
+    <File name="example/ether/include/ksz8567.h" path="example/ether/include/ksz8567.h" type="1"/>
+    <File name="example/lwip/src/core/dhcp.c" path="example/tdpipstack/lwip/src/core/dhcp.c" type="1"/>
+    <File name="example/lwip/include/pbuf.h" path="example/tdpipstack/lwip/include/pbuf.h" type="1"/>
+    <File name="stm_lib/src/misc.c" path="stm_lib/src/misc.c" type="1"/>
+    <File name="example/ptpstm/ptpd_timer.c" path="example/ptpstm/ptpd_timer.c" type="1"/>
+    <File name="example/common/Printf.c" path="example/common/Printf.c" type="1"/>
+    <File name="example/sensor/apds9960ProximitySensor.c" path="example/sensor/apds9960ProximitySensor.c" type="1"/>
+    <File name="cmsis_boot/stm32f10x.h" path="cmsis_boot/stm32f10x.h" type="1"/>
+    <File name="example/usb/src/usb_desc.c" path="example/usb/src/usb_desc.c" type="1"/>
+    <File name="example/ether" path="" type="2"/>
+    <File name="stm_lib/inc/stm32f10x_flash.h" path="stm_lib/inc/stm32f10x_flash.h" type="1"/>
+    <File name="example/commun" path="" type="2"/>
+    <File name="example/sensor/stmMpu6050.c" path="example/sensor/stmMpu6050.c" type="1"/>
+    <File name="syscalls/syscalls.c" path="syscalls/syscalls.c" type="1"/>
+    <File name="example/common/usart.c" path="example/common/usart.c" type="1"/>
+    <File name="example/motor/DualH_Drv8833MotorLoop.c" path="example/motor/DualH_Drv8833MotorLoop.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_adc.c" path="stm_lib/src/stm32f10x_adc.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_dma.h" path="stm_lib/inc/stm32f10x_dma.h" type="1"/>
+    <File name="example/motor/yPwmLoop.c" path="example/motor/yPwmLoop.c" type="1"/>
+    <File name="example/lwip/include/debug.h" path="example/tdpipstack/lwip/include/debug.h" type="1"/>
+    <File name="example/lwip/include/httpd.c" path="example/tdpipstack/lwip/include/httpd.c" type="1"/>
+    <File name="example/lwip/include/netconf.h" path="example/tdpipstack/lwip/include/netconf.h" type="1"/>
+    <File name="example/display/stmPcf8574i2clcd.c" path="example/display/stmPcf8574i2clcd.c" type="1"/>
+    <File name="example/yInc.h" path="example/yInc.h" type="1"/>
+    <File name="example/lwip/src/api" path="" type="2"/>
+    <File name="example/common/rngloop.c" path="example/common/rngloop.c" type="1"/>
+    <File name="cmsis_boot/startup/startup_stm32f10x_md.c" path="cmsis_boot/startup/startup_stm32f10x_md.c" type="1"/>
+    <File name="example/genio/yMcp7219.c" path="example/genio/yMcp7219.c" type="1"/>
+    <File name="example/yLib/yMotor.h" path="example/yLib/yMotor.h" type="1"/>
+    <File name="example/lwip/include/bpstruct.h" path="example/tdpipstack/lwip/include/bpstruct.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_usart.h" path="stm_lib/inc/stm32f10x_usart.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_conf.h" path="cmsis_boot/stm32f10x_conf.h" type="1"/>
+    <File name="example/sensor/stmBmp280.c" path="example/sensor/stmBmp280.c" type="1"/>
+    <File name="example/lwip/src/core/ipv4/igmp.c" path="example/tdpipstack/lwip/src/core/ipv4/igmp.c" type="1"/>
+    <File name="stm_lib/inc/misc.h" path="stm_lib/inc/misc.h" type="1"/>
+    <File name="example/avionics/MarkerBeacon/dtmf.c" path="example/avionics/MarkerBeacon/dtmf.c" type="1"/>
+    <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
+    <File name="example/ether/include/ksz_common.h" path="example/ether/include/ksz_common.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_rcc.c" path="stm_lib/src/stm32f10x_rcc.c" type="1"/>
+    <File name="example/motor/stmServoMotorLoop.c" path="example/motor/stmServoMotorLoop.c" type="1"/>
+    <File name="example/sensor" path="" type="2"/>
+    <File name="example/lwip/include/perf.h" path="example/tdpipstack/lwip/include/perf.h" type="1"/>
+    <File name="example/commun/stmDmx512.c" path="example/commun/stmDmx512.c" type="1"/>
+    <File name="example/lwip/include/loopif.h" path="example/tdpipstack/lwip/include/loopif.h" type="1"/>
+    <File name="example/display/ozled.c" path="example/genio/ozled.c" type="1"/>
+    <File name="example/usb/src/usb_regs.c" path="example/usb/src/usb_regs.c" type="1"/>
+    <File name="example/yLib/eth" path="" type="2"/>
+    <File name="example/sensor/lis3dh.c" path="example/sensor/lis3dh.c" type="1"/>
+    <File name="example/lwip/src/core/udp.c" path="example/tdpipstack/lwip/src/core/udp.c" type="1"/>
+    <File name="stm_lib/src" path="" type="2"/>
+    <File name="example/usb/inc" path="" type="2"/>
+    <File name="example/lwip/include" path="" type="2"/>
+    <File name="example/lwip/include/ip_frag.h" path="example/tdpipstack/lwip/include/ip_frag.h" type="1"/>
+    <File name="cmsis" path="" type="2"/>
+    <File name="stm_lib" path="" type="2"/>
+    <File name="example/clockgen/ds1307.c" path="example/clockgen/ds1307.c" type="1"/>
+    <File name="example/ether/stmEnc28J60.c" path="example/ether/stmEnc28J60.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_exti.h" path="stm_lib/inc/stm32f10x_exti.h" type="1"/>
+    <File name="example/lwip/include/snmp.h" path="example/tdpipstack/lwip/include/snmp.h" type="1"/>
+    <File name="example/commun/stmMcp2515CAN.c" path="example/commun/stmMcp2515CAN.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_adc.h" path="stm_lib/inc/stm32f10x_adc.h" type="1"/>
+    <File name="example/ptpstm/include" path="" type="2"/>
+    <File name="example/lwip/include/ip_addr.h" path="example/tdpipstack/lwip/include/ip_addr.h" type="1"/>
+    <File name="example/ptpstm/ieee8021as.c" path="example/ptpstm/ieee8021as.c" type="1"/>
+    <File name="example/lwip/include/snmp_msg.h" path="example/tdpipstack/lwip/include/snmp_msg.h" type="1"/>
+    <File name="example/common/yUart.c" path="example/common/yUart.c" type="1"/>
+    <File name="example/ptpstm/media_clock.c" path="example/ptpstm/media_clock.c" type="1"/>
+    <File name="example/lwip/include/tcpip.h" path="example/tdpipstack/lwip/include/tcpip.h" type="1"/>
+    <File name="example/avionics/selcal/stmSn76489ToneGen.c" path="example/avionics/selcal/stmSn76489ToneGen.c" type="1"/>
+    <File name="example/lwip/include/memp.h" path="example/tdpipstack/lwip/include/memp.h" type="1"/>
+    <File name="example/common/rcc.c" path="example/common/rcc.c" type="1"/>
+    <File name="example/motor" path="" type="2"/>
+    <File name="example/audio/stmMCP3208adc.c" path="example/audio/stmMCP3208adc.c" type="1"/>
+    <File name="example/etc" path="" type="2"/>
+    <File name="example/yLib/ySpiDrv.c" path="example/yLib/ySpiDrv.c" type="1"/>
+    <File name="example/ptpstm/arith.c" path="example/ptpstm/arith.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_rtc.c" path="stm_lib/src/stm32f10x_rtc.c" type="1"/>
+    <File name="example/sensor/as5600.c" path="example/sensor/as5600.c" type="1"/>
+    <File name="example/common" path="" type="2"/>
+    <File name="example/sensor/dh11TempSensor.c" path="example/sensor/dh11TempSensor.c" type="1"/>
+    <File name="example/yLib/ySpiDrv.h" path="example/yLib/ySpiDrv.h" type="1"/>
+    <File name="example/lwip/src/core/netif.c" path="example/tdpipstack/lwip/src/core/netif.c" type="1"/>
+    <File name="example/clockgen/stmSi5351ClockGen.c" path="example/clockgen/stmSi5351ClockGen.c" type="1"/>
+    <File name="example/lwip/src/api/sockets.c" path="example/tdpipstack/lwip/src/api/sockets.c" type="1"/>
+    <File name="cmsis_boot/stm32_it.h" path="example/usb/inc/stm32_it.h" type="1"/>
+    <File name="example/lwip/src/core/snmp/mib_structs.c" path="example/tdpipstack/lwip/src/core/snmp/mib_structs.c" type="1"/>
+    <File name="example/genio/stmMCP23S17SpiGpio.c" path="example/genio/stmMCP23S17SpiGpio.c" type="1"/>
+    <File name="example/sensor/stmLIS3MDL.c" path="example/sensor/stmLIS3MDL.c" type="1"/>
+    <File name="example/usb/src/usb_int.c" path="example/usb/src/usb_int.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_tim.c" path="stm_lib/src/stm32f10x_tim.c" type="1"/>
+    <File name="cmsis_boot/startup" path="" type="2"/>
+    <File name="cmsis_boot/startup/startup_stm32f10x_hd.c" path="cmsis_boot/startup/startup_stm32f10x_hd.c" type="1"/>
+    <File name="example/ether/tjaNXPmc.c" path="example/ether/tjaNXPmc.c" type="1"/>
+    <File name="example/lwip/include/inet.h" path="example/tdpipstack/lwip/include/inet.h" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_dac.h" path="stm_lib/inc/stm32f10x_dac.h" type="1"/>
+    <File name="example/sensor/stmHmc5883Compass.c" path="example/sensor/stmHmc5883Compass.c" type="1"/>
+    <File name="example/usb/src/usb_mem.c" path="example/usb/src/usb_mem.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_dac.c" path="stm_lib/src/stm32f10x_dac.c" type="1"/>
+    <File name="example/lwip/include/ip.h" path="example/tdpipstack/lwip/include/ip.h" type="1"/>
+    <File name="example/lwip/src/core/ipv4/ip_frag.c" path="example/tdpipstack/lwip/src/core/ipv4/ip_frag.c" type="1"/>
+    <File name="example/ptpstm/protocol.c" path="example/ptpstm/protocol.c" type="1"/>
+    <File name="example/commun/yCanLoop.c" path="example/commun/yCanLoop.c" type="1"/>
+    <File name="example/lwip/include/dns.h" path="example/tdpipstack/lwip/include/dns.h" type="1"/>
+    <File name="example/lwip/src/core/pbuf.c" path="example/tdpipstack/lwip/src/core/pbuf.c" type="1"/>
+    <File name="example/ptpstm/bmc.c" path="example/ptpstm/bmc.c" type="1"/>
+    <File name="example/stmProj" path="" type="2"/>
+    <File name="example/stmProj/proj_wireless_gps_clock.c" path="example/stmProj/proj_wireless_gps_clock.c" type="1"/>
+    <File name="example/avionics/selcal/selcal.c" path="example/avionics/selcal/selcal.c" type="1"/>
+    <File name="example/yLib/eth/include" path="" type="2"/>
+    <File name="example/sensor/vl53L0x.c" path="example/sensor/vl53L0x.c" type="1"/>
+    <File name="example/audio" path="" type="2"/>
+    <File name="stm_lib/inc/stm32f10x_gpio.h" path="stm_lib/inc/stm32f10x_gpio.h" type="1"/>
+    <File name="example/lwip/include/netif.h" path="example/tdpipstack/lwip/include/netif.h" type="1"/>
+    <File name="example/lwip/include/inet_chksum.h" path="example/tdpipstack/lwip/include/inet_chksum.h" type="1"/>
+    <File name="example/commun/stmTCM3105Fsk.c" path="example/commun/stmTCM3105Fsk.c" type="1"/>
+    <File name="example/clockgen/stmSi5328cClockGen.c" path="example/clockgen/stmSi5328cClockGen.c" type="1"/>
+    <File name="example/lwip/src/core/ipv4/inet_chksum.c" path="example/tdpipstack/lwip/src/core/ipv4/inet_chksum.c" type="1"/>
+    <File name="example/sensor/lm75.c" path="../stm103/example/lm75.c" type="1"/>
+    <File name="cmsis/core_cm3.h" path="cmsis/core_cm3.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_exti.c" path="stm_lib/src/stm32f10x_exti.c" type="1"/>
+    <File name="example/common/yPrintf.c" path="example/common/yPrintf.c" type="1"/>
+    <File name="example/lwip/include/sockets.h" path="example/tdpipstack/lwip/include/sockets.h" type="1"/>
+    <File name="example/yLib/yLin.h" path="example/yLib/yLin.h" type="1"/>
+    <File name="example/motor/stmX27_Vid29_Stepper.c" path="example/motor/stmX27_Vid29_Stepper.c" type="1"/>
+    <File name="example/clockgen/stmRtcLoop.c" path="example/clockgen/stmRtcLoop.c" type="1"/>
+    <File name="cmsis_boot/platform_config.h" path="example/usb/inc/platform_config.h" type="1"/>
+    <File name="example/lwip/src/core/snmp" path="" type="2"/>
+    <File name="example/lwip/include/lwipmain.h" path="example/tdpipstack/lwip/include/lwipmain.h" type="1"/>
+    <File name="example/lwip/src/core/memp.c" path="example/tdpipstack/lwip/src/core/memp.c" type="1"/>
+    <File name="example/display/uc164904_CLCD.c" path="example/display/uc164904_CLCD.c" type="1"/>
+    <File name="stm_lib/src/stm32f10x_flash.c" path="stm_lib/src/stm32f10x_flash.c" type="1"/>
+    <File name="example/ptpstm" path="" type="2"/>
+    <File name="example/ether/yEther.c" path="example/ether/yEther.c" type="1"/>
+    <File name="example/proj/CanWithStepperProj/CanWithStepperProj.c" path="example/proj/CanWithStepperProj/CanWithStepperProj.c" type="1"/>
+    <File name="example/usb/src/usb_istr.c" path="example/usb/src/usb_istr.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_i2c.h" path="stm_lib/inc/stm32f10x_i2c.h" type="1"/>
+    <File name="syscalls" path="" type="2"/>
+    <File name="example/sensor/stmBmp180.c" path="example/sensor/stmBmp180.c" type="1"/>
+    <File name="example/lwip/src/core/ipv4/ip.c" path="example/tdpipstack/lwip/src/core/ipv4/ip.c" type="1"/>
+    <File name="example/avionics/stmArinc429spi.c" path="example/avionics/stmArinc429spi.c" type="1"/>
+    <File name="example/lwip/include/icmp.h" path="example/tdpipstack/lwip/include/icmp.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_can.c" path="stm_lib/src/stm32f10x_can.c" type="1"/>
+  </Files>
+</Project>

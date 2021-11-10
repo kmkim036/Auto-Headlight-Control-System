@@ -1,0 +1,1222 @@
+{\rtf1\ansi\ansicpg949\deff0\deflang1033\deflangfe1042{\fonttbl{\f0\fnil\fcharset129 \'b8\'bc\'c0\'ba \'b0\'ed\'b5\'f1;}}
+{\colortbl ;\red0\green0\blue255;}
+{\*\generator Msftedit 5.41.21.2510;}\viewkind4\uc1\pard\sl240\slmult1\lang18\f0\fs20 /* A4988 - Stepper Motor Driver Driver\par
+ * Indexer mode only.\par
+ */\par
+\par
+struct A4988 \{\par
+    static const uint8_t MS_TABLE[];\par
+    short ms1_pin = PIN_UNCONNECTED;\par
+    short ms2_pin = PIN_UNCONNECTED;\par
+    short ms3_pin = PIN_UNCONNECTED;\par
+    // tA STEP minimum, HIGH pulse width (1us)\par
+    static const int step_high_min = 1;\par
+    // tB STEP minimum, LOW pulse width (1us)\par
+    static const int step_low_min = 1;\par
+    // wakeup time, nSLEEP inactive to STEP (1000us)\par
+    static const int wakeup_time = 1000;\par
+    // also 200ns between ENBL/DIR/MSx changes and STEP HIGH\par
+\par
+    // Get the microstep table\par
+    virtual const uint8_t* getMicrostepTable();\par
+    virtual size_t getMicrostepTableSize();\par
+\par
+    // Get max microsteps supported by the device\par
+    short getMaxMicrostep() override;\par
+\par
+private:\par
+    // microstep range (1, 16, 32 etc)\par
+    static const short MAX_MICROSTEP = 16;\par
+\par
+public:\par
+    /*\par
+     * Basic connection: only DIR, STEP are connected.\par
+     * Microstepping controls should be hardwired.\par
+     */\par
+    A4988(short steps, short dir_pin, short step_pin);\par
+    A4988(short steps, short dir_pin, short step_pin, short enable_pin);\par
+    \par
+    void begin(float rpm=60, short microsteps=1);\par
+    /*\par
+     * Fully wired. All the necessary control pins for A4988 are connected.\par
+     */\par
+    A4988(short steps, short dir_pin, short step_pin, short ms1_pin, short ms2_pin, short ms3_pin);\par
+    A4988(short steps, short dir_pin, short step_pin, short enable_pin, short ms1_pin, short ms2_pin, short ms3_pin);\par
+    short setMicrostep(short microsteps) override;\par
+\};\par
+#endif // A4988_H\par
+/*\par
+ * Microstepping resolution truth table (Page 6 of A4988 pdf)\par
+ * 0bMS3,MS2,MS1 for 1,2,4,8,16 microsteps\par
+ */\par
+const uint8_t A4988::MS_TABLE[] = \{0b000, 0b001, 0b010, 0b011, 0b111\};\par
+\par
+/*\par
+ * Basic connection: only DIR, STEP are connected.\par
+ * Microstepping controls should be hardwired.\par
+ */\par
+A4988::A4988(short steps, short dir_pin, short step_pin)\par
+:BasicStepperDriver(steps, dir_pin, step_pin)\par
+\{\}\par
+\par
+A4988::A4988(short steps, short dir_pin, short step_pin, short enable_pin)\par
+:BasicStepperDriver(steps, dir_pin, step_pin, enable_pin)\par
+\{\}\par
+\par
+/*\par
+ * Fully wired.\par
+ * All the necessary control pins for A4988 are connected.\par
+ */\par
+A4988::A4988(short steps, short dir_pin, short step_pin, short ms1_pin, short ms2_pin, short ms3_pin)\par
+:BasicStepperDriver(steps, dir_pin, step_pin),\par
+    ms1_pin(ms1_pin), ms2_pin(ms2_pin), ms3_pin(ms3_pin)\par
+\{\}\par
+\par
+A4988::A4988(short steps, short dir_pin, short step_pin, short enable_pin, short ms1_pin, short ms2_pin, short ms3_pin)\par
+:BasicStepperDriver(steps, dir_pin, step_pin, enable_pin),\par
+ms1_pin(ms1_pin), ms2_pin(ms2_pin), ms3_pin(ms3_pin)\par
+\{\}\par
+\par
+void A4988::begin(float rpm, short microsteps)\{\par
+    BasicStepperDriver::begin(rpm, microsteps);\par
+\par
+    if (!IS_CONNECTED(ms1_pin) || !IS_CONNECTED(ms2_pin) || !IS_CONNECTED(ms3_pin))\{\par
+        return;\par
+    \}\par
+\par
+    pinMode(ms1_pin, OUTPUT);\par
+    pinMode(ms2_pin, OUTPUT);\par
+    pinMode(ms3_pin, OUTPUT);\par
+\}\par
+\par
+/*\par
+ * Set microstepping mode (1:divisor)\par
+ * Allowed ranges for A4988 are 1:1 to 1:16\par
+ * If the control pins are not connected, we recalculate the timing only\par
+ */\par
+short A4988::setMicrostep(short microsteps)\{\par
+    BasicStepperDriver::setMicrostep(microsteps);\par
+\par
+    if (!IS_CONNECTED(ms1_pin) || !IS_CONNECTED(ms2_pin) || !IS_CONNECTED(ms3_pin))\{\par
+        return this->microsteps;\par
+    \}\par
+\par
+    const uint8_t* ms_table = getMicrostepTable();\par
+    size_t ms_table_size = getMicrostepTableSize();\par
+\par
+    unsigned short i = 0;\par
+    while (i < ms_table_size)\{\par
+        if (this->microsteps & (1<<i))\{\par
+            uint8_t mask = ms_table[i];\par
+            digitalWrite(ms3_pin, mask & 4);\par
+            digitalWrite(ms2_pin, mask & 2);\par
+            digitalWrite(ms1_pin, mask & 1);\par
+            break;\par
+        \}\par
+        i++;\par
+    \}\par
+    return this->microsteps;\par
+\}\par
+\par
+const uint8_t* A4988::getMicrostepTable()\{\par
+    return A4988::MS_TABLE;\par
+\}\par
+\par
+size_t A4988::getMicrostepTableSize()\{\par
+    return sizeof(A4988::MS_TABLE);\par
+\}\par
+\par
+short A4988::getMaxMicrostep()\{\par
+    return A4988::MAX_MICROSTEP;\par
+\}\par
+\par
+===\par
+/*\par
+ * Generic Stepper Motor Driver Driver\par
+ * Indexer mode only.\par
+ * Copyright (C)2015-2019 Laurentiu Badea\par
+ *\par
+ * This file may be redistributed under the terms of the MIT license.\par
+ * A copy of this license has been included with this distribution in the file LICENSE.\par
+ *\par
+ * Linear speed profile calculations based on\par
+ * - Generating stepper-motor speed profiles in real time - David Austin, 2004\par
+ * - Atmel AVR446: Linear speed control of stepper motor, 2006\par
+ */\par
+#include "BasicStepperDriver.h"\par
+\par
+/*\par
+ * Basic connection: only DIR, STEP are connected.\par
+ * Microstepping controls should be hardwired.\par
+ */\par
+BasicStepperDriver::BasicStepperDriver(short steps, short dir_pin, short step_pin)\par
+:BasicStepperDriver(steps, dir_pin, step_pin, PIN_UNCONNECTED)\par
+\{\par
+\}\par
+\par
+BasicStepperDriver::BasicStepperDriver(short steps, short dir_pin, short step_pin, short enable_pin)\par
+:motor_steps(steps), dir_pin(dir_pin), step_pin(step_pin), enable_pin(enable_pin)\par
+\{\par
+\tab steps_to_cruise = 0;\par
+\tab steps_remaining = 0;\par
+\tab dir_state = 0;\par
+\tab steps_to_brake = 0;\par
+\tab step_pulse = 0;\par
+    cruise_step_pulse = 0;\par
+\tab rest = 0;\par
+\tab step_count = 0;\par
+\}\par
+\par
+/*\par
+ * Initialize pins, calculate timings etc\par
+ */\par
+void BasicStepperDriver::begin(float rpm, short microsteps)\{\par
+    pinMode(dir_pin, OUTPUT);\par
+    digitalWrite(dir_pin, HIGH);\par
+\par
+    pinMode(step_pin, OUTPUT);\par
+    digitalWrite(step_pin, LOW);\par
+\par
+    if IS_CONNECTED(enable_pin)\{\par
+        pinMode(enable_pin, OUTPUT);\par
+        disable();\par
+    \}\par
+\par
+    this->rpm = rpm;\par
+    setMicrostep(microsteps);\par
+\par
+    enable();\par
+\}\par
+\par
+/*\par
+ * Set target motor RPM (1-200 is a reasonable range)\par
+ */\par
+void BasicStepperDriver::setRPM(float rpm)\{\par
+    if (this->rpm == 0)\{        // begin() has not been called (old 1.0 code)\par
+        begin(rpm, microsteps);\par
+    \}\par
+    this->rpm = rpm;\par
+\}\par
+\par
+/*\par
+ * Set stepping mode (1:microsteps)\par
+ * Allowed ranges for BasicStepperDriver are 1:1 to 1:128\par
+ */\par
+short BasicStepperDriver::setMicrostep(short microsteps)\{\par
+    for (short ms=1; ms <= getMaxMicrostep(); ms<<=1)\{\par
+        if (microsteps == ms)\{\par
+            this->microsteps = microsteps;\par
+            break;\par
+        \}\par
+    \}\par
+    return this->microsteps;\par
+\}\par
+\par
+/*\par
+ * Set speed profile - CONSTANT_SPEED, LINEAR_SPEED (accelerated)\par
+ * accel and decel are given in [full steps/s^2]\par
+ */\par
+void BasicStepperDriver::setSpeedProfile(Mode mode, short accel, short decel)\{\par
+    profile.mode = mode;\par
+    profile.accel = accel;\par
+    profile.decel = decel;\par
+\}\par
+void BasicStepperDriver::setSpeedProfile(struct Profile profile)\{\par
+    this->profile = profile;\par
+\}\par
+\par
+/*\par
+ * Move the motor a given number of steps.\par
+ * positive to move forward, negative to reverse\par
+ */\par
+void BasicStepperDriver::move(long steps)\{\par
+    startMove(steps);\par
+    while (nextAction());\par
+\}\par
+/*\par
+ * Move the motor a given number of degrees (1-360)\par
+ */\par
+void BasicStepperDriver::rotate(long deg)\{\par
+    move(calcStepsForRotation(deg));\par
+\}\par
+/*\par
+ * Move the motor with sub-degree precision.\par
+ * Note that using this function even once will add 1K to your program size\par
+ * due to inclusion of float support.\par
+ */\par
+void BasicStepperDriver::rotate(double deg)\{\par
+    move(calcStepsForRotation(deg));\par
+\}\par
+\par
+/*\par
+ * Set up a new move (calculate and save the parameters)\par
+ */\par
+void BasicStepperDriver::startMove(long steps, long time)\{\par
+    float speed;\par
+    // set up new move\par
+    dir_state = (steps >= 0) ? HIGH : LOW;\par
+    last_action_end = 0;\par
+    steps_remaining = labs(steps);\par
+    step_count = 0;\par
+    rest = 0;\par
+    switch (profile.mode)\{\par
+    case LINEAR_SPEED:\par
+        // speed is in [steps/s]\par
+        speed = rpm * motor_steps / 60;\par
+        if (time > 0)\{\par
+            // Calculate a new speed to finish in the time requested\par
+            float t = time / (1e+6);                  // convert to seconds\par
+            float d = steps_remaining / microsteps;   // convert to full steps\par
+            float a2 = 1.0 / profile.accel + 1.0 / profile.decel;\par
+            float sqrt_candidate = t*t - 2 * a2 * d;  // in \'a1\'eeb^2-4ac\par
+            if (sqrt_candidate >= 0)\{\par
+                speed = min(speed, (t - (float)sqrt(sqrt_candidate)) / a2);\par
+            \};\par
+        \}\par
+        // how many microsteps from 0 to target speed\par
+        steps_to_cruise = microsteps * (speed * speed / (2 * profile.accel));\par
+        // how many microsteps are needed from cruise speed to a full stop\par
+        steps_to_brake = steps_to_cruise * profile.accel / profile.decel;\par
+        if (steps_remaining < steps_to_cruise + steps_to_brake)\{\par
+            // cannot reach max speed, will need to brake early\par
+            steps_to_cruise = steps_remaining * profile.decel / (profile.accel + profile.decel);\par
+            steps_to_brake = steps_remaining - steps_to_cruise;\par
+        \}\par
+        // Initial pulse (c0) including error correction factor 0.676 [us]\par
+        step_pulse = (1e+6)*0.676*sqrt(2.0f/profile.accel/microsteps);\par
+        // Save cruise timing since we will no longer have the calculated target speed later\par
+        cruise_step_pulse = 1e+6 / speed / microsteps;\par
+        break;\par
+\par
+    case CONSTANT_SPEED:\par
+    default:\par
+        steps_to_cruise = 0;\par
+        steps_to_brake = 0;\par
+        step_pulse = cruise_step_pulse = STEP_PULSE(motor_steps, microsteps, rpm);\par
+        if (time > steps_remaining * step_pulse)\{\par
+            step_pulse = (float)time / steps_remaining;\par
+        \}\par
+    \}\par
+\}\par
+/*\par
+ * Alter a running move by adding/removing steps\par
+ * FIXME: This is a naive implementation and it only works well in CRUISING state\par
+ */\par
+void BasicStepperDriver::alterMove(long steps)\{\par
+    switch (getCurrentState())\{\par
+    case ACCELERATING: // this also works but will keep the original speed target\par
+    case CRUISING:\par
+        if (steps >= 0)\{\par
+            steps_remaining += steps;\par
+        \} else \{\par
+            steps_remaining = max(steps_to_brake, steps_remaining+steps);\par
+        \};\par
+        break;\par
+    case DECELERATING:\par
+        // would need to start accelerating again -- NOT IMPLEMENTED\par
+        break;\par
+    case STOPPED:\par
+        startMove(steps);\par
+        break;\par
+    \}\par
+\}\par
+/*\par
+ * Brake early.\par
+ */\par
+void BasicStepperDriver::startBrake(void)\{\par
+    switch (getCurrentState())\{\par
+    case CRUISING:  // this applies to both CONSTANT_SPEED and LINEAR_SPEED modes\par
+        steps_remaining = steps_to_brake;\par
+        break;\par
+\par
+    case ACCELERATING:\par
+        steps_remaining = step_count * profile.accel / profile.decel;\par
+        break;\par
+\par
+    default:\par
+        break; // nothing to do if already stopped or braking\par
+    \}\par
+\}\par
+/*\par
+ * Stop movement immediately and return remaining steps.\par
+ */\par
+long BasicStepperDriver::stop(void)\{\par
+    long retval = steps_remaining;\par
+    steps_remaining = 0;\par
+    return retval;\par
+\}\par
+/*\par
+ * Return calculated time to complete the given move\par
+ */\par
+long BasicStepperDriver::getTimeForMove(long steps)\{\par
+    float t;\par
+    long cruise_steps;\par
+    float speed;\par
+    if (steps == 0)\{\par
+        return 0;\par
+    \}\par
+    switch (profile.mode)\{\par
+        case LINEAR_SPEED:\par
+            startMove(steps);\par
+            cruise_steps = steps_remaining - steps_to_cruise - steps_to_brake;\par
+            speed = rpm * motor_steps / 60;   // full steps/s\par
+            t = (cruise_steps / (microsteps * speed)) + \par
+                sqrt(2.0 * steps_to_cruise / profile.accel / microsteps) +\par
+                sqrt(2.0 * steps_to_brake / profile.decel / microsteps);\par
+            t *= (1e+6); // seconds -> micros\par
+            break;\par
+        case CONSTANT_SPEED:\par
+        default:\par
+            t = steps * STEP_PULSE(motor_steps, microsteps, rpm);\par
+    \}\par
+    return round(t);\par
+\}\par
+/*\par
+ * Move the motor an integer number of degrees (360 = full rotation)\par
+ * This has poor precision for small amounts, since step is usually 1.8deg\par
+ */\par
+void BasicStepperDriver::startRotate(long deg)\{\par
+    startMove(calcStepsForRotation(deg));\par
+\}\par
+/*\par
+ * Move the motor with sub-degree precision.\par
+ * Note that calling this function will increase program size substantially\par
+ * due to inclusion of float support.\par
+ */\par
+void BasicStepperDriver::startRotate(double deg)\{\par
+    startMove(calcStepsForRotation(deg));\par
+\}\par
+\par
+/*\par
+ * calculate the interval til the next pulse\par
+ */\par
+void BasicStepperDriver::calcStepPulse(void)\{\par
+    if (steps_remaining <= 0)\{  // this should not happen, but avoids strange calculations\par
+        return;\par
+    \}\par
+    steps_remaining--;\par
+    step_count++;\par
+\par
+    if (profile.mode == LINEAR_SPEED)\{\par
+        switch (getCurrentState())\{\par
+        case ACCELERATING:\par
+            if (step_count < steps_to_cruise)\{\par
+                step_pulse = step_pulse - (2*step_pulse+rest)/(4*step_count+1);\par
+                rest = (step_count < steps_to_cruise) ? (2*step_pulse+rest) % (4*step_count+1) : 0;\par
+            \} else \{\par
+                // The series approximates target, set the final value to what it should be instead\par
+                step_pulse = cruise_step_pulse;\par
+            \}\par
+            break;\par
+\par
+        case DECELERATING:\par
+            step_pulse = step_pulse - (2*step_pulse+rest)/(-4*steps_remaining+1);\par
+            rest = (2*step_pulse+rest) % (-4*steps_remaining+1);\par
+            break;\par
+\par
+        default:\par
+            break; // no speed changes\par
+        \}\par
+    \}\par
+\}\par
+/*\par
+ * Yield to step control\par
+ * Toggle step and return time until next change is needed (micros)\par
+ */\par
+long BasicStepperDriver::nextAction(void)\{\par
+    if (steps_remaining > 0)\{\par
+        delayMicros(next_action_interval, last_action_end);\par
+        /*\par
+         * DIR pin is sampled on rising STEP edge, so it is set first\par
+         */\par
+        digitalWrite(dir_pin, dir_state);\par
+        digitalWrite(step_pin, HIGH);\par
+        unsigned m = micros();\par
+        unsigned long pulse = step_pulse; // save value because calcStepPulse() will overwrite it\par
+        calcStepPulse();\par
+        // We should pull HIGH for at least 1-2us (step_high_min)\par
+        delayMicros(step_high_min);\par
+        digitalWrite(step_pin, LOW);\par
+        // account for calcStepPulse() execution time; sets ceiling for max rpm on slower MCUs\par
+        last_action_end = micros();\par
+        m = last_action_end - m;\par
+        next_action_interval = (pulse > m) ? pulse - m : 1;\par
+    \} else \{\par
+        // end of move\par
+        last_action_end = 0;\par
+        next_action_interval = 0;\par
+    \}\par
+    return next_action_interval;\par
+\}\par
+\par
+enum BasicStepperDriver::State BasicStepperDriver::getCurrentState(void)\{\par
+    enum State state;\par
+    if (steps_remaining <= 0)\{\par
+        state = STOPPED;\par
+    \} else \{\par
+        if (steps_remaining <= steps_to_brake)\{\par
+            state = DECELERATING;\par
+        \} else if (step_count <= steps_to_cruise)\{\par
+            state = ACCELERATING;\par
+        \} else \{\par
+            state = CRUISING;\par
+        \}\par
+    \}\par
+    return state;\par
+\}\par
+/*\par
+ * Configure which logic state on ENABLE pin means active\par
+ * when using SLEEP (default) this is active HIGH\par
+ */\par
+void BasicStepperDriver::setEnableActiveState(short state)\{\par
+    enable_active_state = state;\par
+\}\par
+/*\par
+ * Enable/Disable the motor by setting a digital flag\par
+ */\par
+void BasicStepperDriver::enable(void)\{\par
+    if IS_CONNECTED(enable_pin)\{\par
+        digitalWrite(enable_pin, enable_active_state);\par
+    \};\par
+    delayMicros(2);\par
+\}\par
+\par
+void BasicStepperDriver::disable(void)\{\par
+    if IS_CONNECTED(enable_pin)\{\par
+        digitalWrite(enable_pin, (enable_active_state == HIGH) ? LOW : HIGH);\par
+    \}\par
+\}\par
+\par
+short BasicStepperDriver::getMaxMicrostep()\{\par
+    return BasicStepperDriver::MAX_MICROSTEP;\par
+\}\par
+\par
+// used internally by the library to mark unconnected pins\par
+#define PIN_UNCONNECTED -1\par
+#define IS_CONNECTED(pin) (pin != PIN_UNCONNECTED)\par
+\par
+/*\par
+ * calculate the step pulse in microseconds for a given rpm value.\par
+ * 60[s/min] * 1000000[us/s] / microsteps / steps / rpm\par
+ */\par
+#define STEP_PULSE(steps, microsteps, rpm) (60.0*1000000L/steps/microsteps/rpm)\par
+\par
+// don't call yield if we have a wait shorter than this\par
+#define MIN_YIELD_MICROS 50\par
+\par
+/*\par
+ * Basic Stepper Driver class.\par
+ * Microstepping level should be externally controlled or hardwired.\par
+ */\par
+class BasicStepperDriver \{\par
+public:\par
+    enum Mode \{CONSTANT_SPEED, LINEAR_SPEED\};\par
+    enum State \{STOPPED, ACCELERATING, CRUISING, DECELERATING\};\par
+    struct Profile \{\par
+        Mode mode = CONSTANT_SPEED;\par
+        short accel = 1000;     // acceleration [steps/s^2]\par
+        short decel = 1000;     // deceleration [steps/s^2]    \par
+    \};\par
+    static inline void delayMicros(unsigned long delay_us, unsigned long start_us = 0)\{\par
+        if (delay_us)\{\par
+            if (!start_us)\{\par
+                start_us = micros();\par
+            \}\par
+            if (delay_us > MIN_YIELD_MICROS)\{\par
+                yield();\par
+            \}\par
+            // See {\field{\*\fldinst{HYPERLINK "https://www.gammon.com.au/millis"}}{\fldrslt{\ul\cf1 https://www.gammon.com.au/millis}}}\f0\fs20\par
+            while (micros() - start_us < delay_us);\par
+        \}\par
+    \}\par
+\par
+private:\par
+    // calculation remainder to be fed into successive steps to increase accuracy (Atmel DOC8017)\par
+    long rest;\par
+    unsigned long last_action_end = 0;\par
+    unsigned long next_action_interval = 0;\par
+\par
+protected:\par
+    /*\par
+     * Motor Configuration\par
+     */\par
+    short motor_steps;           // motor steps per revolution (usually 200)\par
+\par
+    /*\par
+     * Driver Configuration\par
+     */\par
+    short dir_pin;\par
+    short step_pin;\par
+    short enable_pin = PIN_UNCONNECTED;\par
+    short enable_active_state = HIGH;\par
+    // Get max microsteps supported by the device\par
+    virtual short getMaxMicrostep();\par
+    // current microstep level (1,2,4,8,...), must be < getMaxMicrostep()\par
+    short microsteps = 1;\par
+    // tWH(STEP) pulse duration, STEP high, min value (us)\par
+    static const int step_high_min = 1;\par
+    // tWL(STEP) pulse duration, STEP low, min value (us)\par
+    static const int step_low_min = 1;\par
+    // tWAKE wakeup time, nSLEEP inactive to STEP (us)\par
+    static const int wakeup_time = 0;\par
+\par
+    float rpm = 0;\par
+\par
+    /*\par
+     * Movement state\par
+     */\par
+    struct Profile profile;\par
+\par
+    long step_count;        // current position\par
+    long steps_remaining;   // to complete the current move (absolute value)\par
+    long steps_to_cruise;   // steps to reach cruising (max) rpm\par
+    long steps_to_brake;    // steps needed to come to a full stop\par
+    long step_pulse;        // step pulse duration (microseconds)\par
+    long cruise_step_pulse; // step pulse duration for constant speed section (max rpm)\par
+\par
+    // DIR pin state\par
+    short dir_state;\par
+\par
+    void calcStepPulse(void);\par
+\par
+    // this is internal because one can call the start methods while CRUISING to get here\par
+    void alterMove(long steps);\par
+\par
+private:\par
+    // microstep range (1, 16, 32 etc)\par
+    static const short MAX_MICROSTEP = 128;\par
+\par
+public:\par
+    /*\par
+     * Basic connection: DIR, STEP are connected.\par
+     */\par
+    BasicStepperDriver(short steps, short dir_pin, short step_pin);\par
+    BasicStepperDriver(short steps, short dir_pin, short step_pin, short enable_pin);\par
+    /*\par
+     * Initialize pins, calculate timings etc\par
+     */\par
+    void begin(float rpm=60, short microsteps=1);\par
+    /*\par
+     * Set current microstep level, 1=full speed, 32=fine microstepping\par
+     * Returns new level or previous level if value out of range\par
+     */\par
+    virtual short setMicrostep(short microsteps);\par
+    short getMicrostep(void)\{\par
+        return microsteps;\par
+    \}\par
+    short getSteps(void)\{\par
+        return motor_steps;\par
+    \}\par
+    /*\par
+     * Set target motor RPM (1-200 is a reasonable range)\par
+     */\par
+    void setRPM(float rpm);\par
+    float getRPM(void)\{\par
+        return rpm;\par
+    \};\par
+    float getCurrentRPM(void)\{\par
+        return (60.0*1000000L / step_pulse / microsteps / motor_steps);\par
+    \}\par
+    /*\par
+     * Set speed profile - CONSTANT_SPEED, LINEAR_SPEED (accelerated)\par
+     * accel and decel are given in [full steps/s^2]\par
+     */\par
+    void setSpeedProfile(Mode mode, short accel=1000, short decel=1000);\par
+    void setSpeedProfile(struct Profile profile);\par
+    struct Profile getSpeedProfile(void)\{\par
+        return profile;\par
+    \}\par
+    short getAcceleration(void)\{\par
+        return profile.accel;\par
+    \}\par
+    short getDeceleration(void)\{\par
+        return profile.decel;\par
+    \}\par
+    /*\par
+     * Move the motor a given number of steps.\par
+     * positive to move forward, negative to reverse\par
+     */\par
+    void move(long steps);\par
+    /*\par
+     * Rotate the motor a given number of degrees (1-360)\par
+     */\par
+    void rotate(long deg);\par
+    inline void rotate(int deg)\{\par
+        rotate((long)deg);\par
+    \};\par
+    /*\par
+     * Rotate using a float or double for increased movement precision.\par
+     */\par
+    void rotate(double deg);\par
+    /*\par
+     * Configure which logic state on ENABLE pin means active\par
+     * when using SLEEP (default) this is active HIGH\par
+     */\par
+    void setEnableActiveState(short state);\par
+    /*\par
+     * Turn off/on motor to allow the motor to be moved by hand/hold the position in place\par
+     */\par
+    virtual void enable(void);\par
+    virtual void disable(void);\par
+    /*\par
+     * Methods for non-blocking mode.\par
+     * They use more code but allow doing other operations between impulses.\par
+     * The flow has two parts - start/initiate followed by looping with nextAction.\par
+     * See NonBlocking example.\par
+     */\par
+    /*\par
+     * Initiate a move over known distance (calculate and save the parameters)\par
+     * Pick just one based on move type and distance type.\par
+     * If time (microseconds) is given, the driver will attempt to execute the move in exactly that time\par
+     * by altering rpm for this move only (up to preset rpm).\par
+     */\par
+    void startMove(long steps, long time=0);\par
+    inline void startRotate(int deg)\{\par
+        startRotate((long)deg);\par
+    \};\par
+    void startRotate(long deg);\par
+    void startRotate(double deg);\par
+    /*\par
+     * Toggle step at the right time and return time until next change is needed (micros)\par
+     */\par
+    long nextAction(void);\par
+    /*\par
+     * Optionally, call this to begin braking (and then stop) early\par
+     * For constant speed, this is the same as stop()\par
+     */\par
+    void startBrake(void);\par
+    /*\par
+     * Immediate stop\par
+     * Returns the number of steps remaining.\par
+     */\par
+    long stop(void);\par
+    /*\par
+     * State querying\par
+     */\par
+    enum State getCurrentState(void);\par
+    /*\par
+     * Get the number of completed steps so far.\par
+     * This is always a positive number\par
+     */\par
+    long getStepsCompleted(void)\{\par
+        return step_count;\par
+    \}\par
+    /*\par
+     * Get the number of steps remaining to complete the move\par
+     * This is always a positive number\par
+     */\par
+    long getStepsRemaining(void)\{\par
+        return steps_remaining;\par
+    \}\par
+    /*\par
+     * Get movement direction: forward +1, back -1\par
+     */\par
+    int getDirection(void)\{\par
+        return (dir_state == HIGH) ? 1 : -1;\par
+    \}\par
+    /*\par
+     * Return calculated time to complete the given move\par
+     */\par
+    long getTimeForMove(long steps);\par
+    /*\par
+     * Calculate steps needed to rotate requested angle, given in degrees\par
+     */\par
+    long calcStepsForRotation(long deg)\{\par
+        return deg * motor_steps * (long)microsteps / 360;\par
+    \}\par
+    long calcStepsForRotation(double deg)\{\par
+        return deg * motor_steps * microsteps / 360;\par
+    \}\par
+\};\par
+\par
+/*\par
+ * Microstepping demo\par
+ *\par
+ * This requires that microstep control pins be connected in addition to STEP,DIR\par
+ *\par
+ * Copyright (C)2015 Laurentiu Badea\par
+ *\par
+ * This file may be redistributed under the terms of the MIT license.\par
+ * A copy of this license has been included with this distribution in the file LICENSE.\par
+ */\par
+#include <Arduino.h>\par
+\par
+// Motor steps per revolution. Most steppers are 200 steps or 1.8 degrees/step\par
+#define MOTOR_STEPS 200\par
+#define RPM 120\par
+\par
+#define DIR 8\par
+#define STEP 9\par
+#define SLEEP 13 // optional (just delete SLEEP from everywhere if not used)\par
+\par
+/*\par
+ * Choose one of the sections below that match your board\par
+ */\par
+\par
+#include "DRV8834.h"\par
+#define M0 10\par
+#define M1 11\par
+DRV8834 stepper(MOTOR_STEPS, DIR, STEP, SLEEP, M0, M1);\par
+\par
+// #include "A4988.h"\par
+// #define MS1 10\par
+// #define MS2 11\par
+// #define MS3 12\par
+// A4988 stepper(MOTOR_STEPS, DIR, STEP, SLEEP, MS1, MS2, MS3);\par
+\par
+// #include "DRV8825.h"\par
+// #define MODE0 10\par
+// #define MODE1 11\par
+// #define MODE2 12\par
+// DRV8825 stepper(MOTOR_STEPS, DIR, STEP, SLEEP, MODE0, MODE1, MODE2);\par
+\par
+// #include "DRV8880.h"\par
+// #define M0 10\par
+// #define M1 11\par
+// #define TRQ0 6\par
+// #define TRQ1 7\par
+// DRV8880 stepper(MOTOR_STEPS, DIR, STEP, SLEEP, M0, M1, TRQ0, TRQ1);\par
+\par
+// #include "BasicStepperDriver.h" // generic\par
+// BasicStepperDriver stepper(DIR, STEP);\par
+\par
+void setup() \{\par
+    /*\par
+     * Set target motor RPM.\par
+     */\par
+    stepper.begin(RPM);\par
+    // if using enable/disable on ENABLE pin (active LOW) instead of SLEEP uncomment next line\par
+    // stepper.setEnableActiveState(LOW);\par
+    stepper.enable();\par
+    \par
+    // set current level (for DRV8880 only). \par
+    // Valid percent values are 25, 50, 75 or 100.\par
+    // stepper.setCurrent(100);\par
+\}\par
+\par
+void loop() \{\par
+    delay(1000);\par
+\par
+    /*\par
+     * Moving motor in full step mode is simple:\par
+     */\par
+    stepper.setMicrostep(1);  // Set microstep mode to 1:1\par
+\par
+    // One complete revolution is 360\'a1\'c6\par
+    stepper.rotate(360);     // forward revolution\par
+    stepper.rotate(-360);    // reverse revolution\par
+\par
+    // One complete revolution is also MOTOR_STEPS steps in full step mode\par
+    stepper.move(MOTOR_STEPS);    // forward revolution\par
+    stepper.move(-MOTOR_STEPS);   // reverse revolution\par
+\par
+    /*\par
+     * Microstepping mode: 1, 2, 4, 8, 16 or 32 (where supported by driver)\par
+     * Mode 1 is full speed.\par
+     * Mode 32 is 32 microsteps per step.\par
+     * The motor should rotate just as fast (at the set RPM),\par
+     * but movement precision is increased, which may become visually apparent at lower RPMs.\par
+     */\par
+    stepper.setMicrostep(8);   // Set microstep mode to 1:8\par
+\par
+    // In 1:8 microstepping mode, one revolution takes 8 times as many microsteps\par
+    stepper.move(8 * MOTOR_STEPS);    // forward revolution\par
+    stepper.move(-8 * MOTOR_STEPS);   // reverse revolution\par
+    \par
+    // One complete revolution is still 360\'a1\'c6 regardless of microstepping mode\par
+    // rotate() is easier to use than move() when no need to land on precise microstep position\par
+    stepper.rotate(360);\par
+    stepper.rotate(-360);\par
+\par
+    delay(5000);\par
+\}\par
+//==\par
+class DRV8825 : public A4988 \{\par
+protected:\par
+    static const uint8_t MS_TABLE[];\par
+    // tWH(STEP) pulse duration, STEP high, min value (1.9us)\par
+    static const int step_high_min = 2;\par
+    // tWL(STEP) pulse duration, STEP low, min value (1.9us)\par
+    static const int step_low_min = 2;\par
+    // tWAKE wakeup time, nSLEEP inactive to STEP (1000us)\par
+    static const int wakeup_time = 1700;\par
+    // also 650ns between ENBL/DIR/MODEx changes and STEP HIGH\par
+\par
+    // Get the microstep table\par
+    const uint8_t* getMicrostepTable() override;\par
+    size_t getMicrostepTableSize() override;\par
+\par
+    // Get max microsteps supported by the device\par
+    short getMaxMicrostep() override;\par
+\par
+private:\par
+    // microstep range (1, 16, 32 etc)\par
+    static const short MAX_MICROSTEP = 32;\par
+\par
+public:\par
+    DRV8825(short steps, short dir_pin, short step_pin);\par
+    DRV8825(short steps, short dir_pin, short step_pin, short enable_pin);\par
+    DRV8825(short steps, short dir_pin, short step_pin, short mode0_pin, short mode1_pin, short mode2_pin);\par
+    DRV8825(short steps, short dir_pin, short step_pin, short enable_pin, short mode0_pin, short mode1_pin, short mode2_pin);\par
+\};\par
+/*\par
+ * DRV8825 - Stepper Motor Driver Driver\par
+ * Indexer mode only.\par
+ * Copyright (C)2015 Laurentiu Badea\par
+ *\par
+ * This file may be redistributed under the terms of the MIT license.\par
+ * A copy of this license has been included with this distribution in the file LICENSE.\par
+ */\par
+#include "DRV8825.h"\par
+\par
+/*\par
+ * Microstepping resolution truth table (Page 13 of DRV8825 pdf)\par
+ * 0bMODE2,MODE1,MODE0 for 1,2,4,8,16,32 microsteps\par
+ */\par
+const uint8_t DRV8825::MS_TABLE[] = \{0b000, 0b001, 0b010, 0b011, 0b100, 0b111\};\par
+\par
+DRV8825::DRV8825(short steps, short dir_pin, short step_pin)\par
+:A4988(steps, dir_pin, step_pin)\par
+\{\}\par
+\par
+DRV8825::DRV8825(short steps, short dir_pin, short step_pin, short enable_pin)\par
+:A4988(steps, dir_pin, step_pin, enable_pin)\par
+\{\}\par
+\par
+/*\par
+ * A4988-DRV8825 Compatibility map: MS1-MODE0, MS2-MODE1, MS3-MODE2\par
+ */\par
+DRV8825::DRV8825(short steps, short dir_pin, short step_pin, short mode0_pin, short mode1_pin, short mode2_pin)\par
+:A4988(steps, dir_pin, step_pin, mode0_pin, mode1_pin, mode2_pin)\par
+\{\}\par
+\par
+DRV8825::DRV8825(short steps, short dir_pin, short step_pin, short enable_pin, short mode0_pin, short mode1_pin, short mode2_pin)\par
+:A4988(steps, dir_pin, step_pin, enable_pin, mode0_pin, mode1_pin, mode2_pin)\par
+\{\}\par
+\par
+const uint8_t* DRV8825::getMicrostepTable()\par
+\{\par
+    return (uint8_t*)DRV8825::MS_TABLE;\par
+\}\par
+\par
+size_t DRV8825::getMicrostepTableSize()\par
+\{\par
+    return sizeof(DRV8825::MS_TABLE);\par
+\}\par
+\par
+short DRV8825::getMaxMicrostep()\{\par
+    return DRV8825::MAX_MICROSTEP;\par
+\}\par
+//==\par
+/* Includes ------------------------------------------------------------------*/\par
+#include "main.h"\par
+#include "stm32f1xx_hal.h"\par
+\par
+/* USER CODE BEGIN Includes */\par
+/* USER CODE END Includes */\par
+\par
+/* Private variables ---------------------------------------------------------*/\par
+TIM_HandleTypeDef htim1;\par
+\par
+/* USER CODE BEGIN PV */\par
+/* Private variables ---------------------------------------------------------*/\par
+int step=0,durum=0,sayac=0;\par
+/* USER CODE END PV */\par
+\par
+/* Private function prototypes -----------------------------------------------*/\par
+void SystemClock_Config(void);\par
+static void MX_GPIO_Init(void);\par
+static void MX_TIM1_Init(void);                                    \par
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);\par
+                                \par
+\par
+/* USER CODE BEGIN PFP */\par
+/* Private function prototypes -----------------------------------------------*/\par
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)\par
+\{\par
+\tab if(htim->Instance == TIM1) // eger kesme kaynagi timer1 den gelmis ise\par
+\tab\{\par
+\tab\tab sayac++;\tab\tab\tab\tab\tab\tab\tab\tab // her kesmede sayaci arttir.\par
+\tab\tab if(sayac == step)\tab\tab\tab\tab // eger sayac istenilen adim sayisi kadar artmis ise\par
+\tab\tab\{\par
+\tab\tab\tab HAL_TIM_PWM_Stop_IT(&htim1,TIM_CHANNEL_1);\tab // PWM'i durdur.\par
+\tab\tab\tab sayac=0;\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab // bir sonraki komutta sayac sifirdan baslamali\par
+\tab\tab\tab durum=0;\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab // step fonksiyonunun i\u231?indeki while d\u246?ng\u252?s\u252?nden \u231?ikilmasi i\u231?in\par
+\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab\tab // durum degiskeni sifirlandi.\par
+\tab\tab\}\par
+\tab\}\par
+\}\par
+\par
+void Step(int adim ,int yon)  // step motor fonksiyonu. iki adet parametre alicak. Pals ve y\u246?n parametreleri\par
+\{\par
+\tab step=adim;\par
+\tab if(yon==0)\par
+\tab\tab HAL_GPIO_WritePin(GPIOA,DIR_Pin,GPIO_PIN_RESET);\tab // eger y\u246?n bilgisi sifir ise DIR pini lojik 0 yapildi.\par
+\tab else\par
+\tab\tab HAL_GPIO_WritePin(GPIOA,DIR_Pin,GPIO_PIN_SET);\tab // sifirdan farkli bir deger ise DIR pini lojik 1 yapildi.\par
+\tab durum=1;\par
+\tab HAL_TIM_PWM_Start_IT(&htim1,TIM_CHANNEL_1);\tab // PWM'i baslatildi.\par
+\tab while(1) // step motorun istenilen konuma gitmesi i\u231?in belli bir s\u252?re gececek\par
+\tab\{\tab\tab\tab\tab\tab\tab //\tab bu s\u252?re boyunca programin tekrar step fonksiyonunun i\u231?ine girmesini \u246?nlemek i\u231?in sonsuz d\u246?ng\u252? olusturuldu.\par
+\tab\tab if(durum==0)\tab\tab\tab\tab\tab // step motor istenilen konuma gittiginde durum degiskeni sifir olacak ve d\u246?ng\u252?den \u231?ikilacak.\par
+\tab\tab\tab break;\par
+\tab\tab HAL_Delay(1);\par
+\tab\}\par
+\tab\par
+\}\par
+/* USER CODE END PFP */\par
+\par
+/* USER CODE BEGIN 0 */\par
+\par
+/* USER CODE END 0 */\par
+\par
+int main(void)\par
+\{\par
+\par
+  /* USER CODE BEGIN 1 */\par
+\par
+  /* USER CODE END 1 */\par
+\par
+  /* MCU Configuration----------------------------------------------------------*/\par
+\par
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */\par
+  HAL_Init();\par
+\par
+  /* USER CODE BEGIN Init */\par
+\par
+  /* USER CODE END Init */\par
+\par
+  /* Configure the system clock */\par
+  SystemClock_Config();\par
+\par
+  /* USER CODE BEGIN SysInit */\par
+\par
+  /* USER CODE END SysInit */\par
+\par
+  /* Initialize all configured peripherals */\par
+  MX_GPIO_Init();\par
+  MX_TIM1_Init();\par
+\par
+  /* USER CODE BEGIN 2 */\par
+  __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_1, 128); // Duty cycle %50 olarak ayarlandi.\tab\par
+\tab HAL_Delay(100);\par
+  /* USER CODE END 2 */\par
+\par
+  /* Infinite loop */\par
+  /* USER CODE BEGIN WHILE */\par
+  while (1)\par
+  \{\par
+\tab\tab Step(200,0);\par
+\tab\tab HAL_Delay(1000);\par
+\tab\tab Step(400,1);\par
+\tab\tab HAL_Delay(1000);\par
+  /* USER CODE END WHILE */\par
+\par
+  /* USER CODE BEGIN 3 */\par
+\par
+  \}\par
+  /* USER CODE END 3 */\par
+\par
+\}\par
+\par
+/** System Clock Configuration\par
+*/\par
+void SystemClock_Config(void)\par
+\{\par
+\par
+  RCC_OscInitTypeDef RCC_OscInitStruct;\par
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;\par
+\par
+    /**Initializes the CPU, AHB and APB busses clocks \par
+    */\par
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;\par
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;\par
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;\par
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;\par
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;\par
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;\par
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL7;\par
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+    /**Initializes the CPU, AHB and APB busses clocks \par
+    */\par
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK\par
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;\par
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;\par
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;\par
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;\par
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;\par
+\par
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+    /**Configure the Systick interrupt time \par
+    */\par
+  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);\par
+\par
+    /**Configure the Systick \par
+    */\par
+  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);\par
+\par
+  /* SysTick_IRQn interrupt configuration */\par
+  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);\par
+\}\par
+\par
+/* TIM1 init function */\par
+static void MX_TIM1_Init(void)\par
+\{\par
+\par
+  TIM_ClockConfigTypeDef sClockSourceConfig;\par
+  TIM_MasterConfigTypeDef sMasterConfig;\par
+  TIM_OC_InitTypeDef sConfigOC;\par
+  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;\par
+\par
+  htim1.Instance = TIM1;\par
+  htim1.Init.Prescaler = 217;\par
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;\par
+  htim1.Init.Period = 255;\par
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;\par
+  htim1.Init.RepetitionCounter = 0;\par
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;\par
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;\par
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+  if (HAL_TIM_PWM_Init(&htim1) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;\par
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;\par
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;\par
+  sConfigOC.Pulse = 0;\par
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;\par
+  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;\par
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;\par
+  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;\par
+  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;\par
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;\par
+  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;\par
+  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;\par
+  sBreakDeadTimeConfig.DeadTime = 0;\par
+  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;\par
+  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;\par
+  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;\par
+  if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)\par
+  \{\par
+    _Error_Handler(__FILE__, __LINE__);\par
+  \}\par
+\par
+  HAL_TIM_MspPostInit(&htim1);\par
+\par
+\}\par
+\par
+/** Configure pins as \par
+        * Analog \par
+        * Input \par
+        * Output\par
+        * EVENT_OUT\par
+        * EXTI\par
+*/\par
+static void MX_GPIO_Init(void)\par
+\{\par
+\par
+  GPIO_InitTypeDef GPIO_InitStruct;\par
+\par
+  /* GPIO Ports Clock Enable */\par
+  __HAL_RCC_GPIOD_CLK_ENABLE();\par
+  __HAL_RCC_GPIOA_CLK_ENABLE();\par
+\par
+  /*Configure GPIO pin Output Level */\par
+  HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);\par
+\par
+  /*Configure GPIO pin : DIR_Pin */\par
+  GPIO_InitStruct.Pin = DIR_Pin;\par
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;\par
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;\par
+  HAL_GPIO_Init(DIR_GPIO_Port, &GPIO_InitStruct);\par
+\par
+\}\par
+\par
+/* USER CODE BEGIN 4 */\par
+\par
+/* USER CODE END 4 */\par
+\par
+/**\par
+  * @brief  This function is executed in case of error occurrence.\par
+  * @param  None\par
+  * @retval None\par
+  */\par
+void _Error_Handler(char * file, int line)\par
+\{\par
+  /* USER CODE BEGIN Error_Handler_Debug */\par
+  /* User can add his own implementation to report the HAL error return state */\par
+  while(1) \par
+  \{\par
+  \}\par
+  /* USER CODE END Error_Handler_Debug */ \par
+\}\par
+\par
+#ifdef USE_FULL_ASSERT\par
+\par
+/**\par
+   * @brief Reports the name of the source file and the source line number\par
+   * where the assert_param error has occurred.\par
+   * @param file: pointer to the source file name\par
+   * @param line: assert_param error line source number\par
+   * @retval None\par
+   */\par
+void assert_failed(uint8_t* file, uint32_t line)\par
+\{\par
+  /* USER CODE BEGIN 6 */\par
+  /* User can add his own implementation to report the file name and line number,\par
+    ex: printf("Wrong parameters value: file %s on line %d\\r\\n", file, line) */\par
+  /* USER CODE END 6 */\par
+\par
+\}\par
+\par
+#endif\par
+\par
+/**\par
+  * @\}\par
+  */ \par
+\par
+/**\par
+  * @\}\par
+*/ \par
+\par
+#define DIR_Pin GPIO_PIN_9\par
+#define DIR_GPIO_Port GPIOA\par
+\par
+/* USER CODE BEGIN Private defines */\par
+\par
+/* USER CODE END Private defines */\par
+\par
+void _Error_Handler(char *, int);\par
+\par
+#define Error_Handler() _Error_Handler(__FILE__, __LINE__)\par
+}
+ 

@@ -353,15 +353,16 @@ extern void stmArinc429_ReceiverLoop();
 extern void tca8418_loop();
 
 // kmkim
-extern void AP3216setup();
+extern int stmAp3216_Init(unsigned char enALS, unsigned char enPS);
 extern int AP3216get();
 extern void stmADXL345_ACCEL_Init();
 extern int ADXL345get();
+extern void Servo_Setup();
 extern void Servo_control(int angle);
 extern void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
 extern void GPIO_ResetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
-#define LUX_THRESHOLD 150
-#define PITCH_THRESHOLD 15
+#define LUX_THRESHOLD 50
+#define PITCH_THRESHOLD 30
 
 void stmSET_PB3_4_GPIO()
 {
@@ -370,15 +371,13 @@ void stmSET_PB3_4_GPIO()
 	//Thus we should remap it to general GPIO pin as the follows if needed.
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //PB3/PB4 Remap to GPIO
-#if 0 //TEST
-	//(b)Configure PB3 and PB4 as outputs for GPIO
+    //(b)Configure PB3 and PB4 as outputs for GPIO
     GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;// | GPIO_Mode_AF_PP;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStruct);
 	GPIO_SetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
-#endif
 #endif
 }
 
@@ -389,7 +388,6 @@ void stmRESET_PB3_4_GPIO()
 	//Thus we should remap it to general GPIO pin as the follows if needed.
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //PB3/PB4 Remap to GPIO
-#if 0 //TEST
 	//(b)Configure PB3 and PB4 as outputs for GPIO
     GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
@@ -397,7 +395,6 @@ void stmRESET_PB3_4_GPIO()
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStruct);
 	GPIO_ResetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
-#endif
 #endif
 }
 
@@ -763,19 +760,18 @@ void stmUsingPB3_4_AsGPIO()
 	//Thus we should remap it to general GPIO pin as the follows if needed.
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //PB3/PB4 Remap to GPIO
-#if 0 //TEST
+#if 1 //TEST
 	//(b)Configure PB3 and PB4 as outputs for GPIO
     GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;// | GPIO_Mode_AF_PP;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStruct);
-
     while(1){
     	{GPIO_SetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);}
-    	delayms(100);
+    	delayms(5000);
     	{GPIO_ResetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);}
-    	delayms(100);
+    	delayms(5000);
     }
 
 #endif
@@ -1082,7 +1078,7 @@ int main(void)
 
 	//============= Preliminary experiment ================================
 
-	stmUsingPB3_4_AsGPIO();
+//	stmUsingPB3_4_AsGPIO();
 
 	// stmBlinkyVeryFirstLoop();
 
@@ -1100,34 +1096,31 @@ int main(void)
 	  g_bI2CModuleConfigDone = 1;
 
 	  //SSD1306_OLED_init("HELLO KONG");
-
 	  // stmTjaNxpMC_Loop();
-
 	  //stmTea5767FmLoop();
 
 	  // kmkim
-	  AP3216setup();
+	  stmAp3216_Init(1, 1);
 	  stmADXL345_ACCEL_Init();
+	  Servo_Setup();
 	  while(1) {
 		  int lux = AP3216get();
-		  printf("lux: %d\r\n", lux);
 		  if(lux < LUX_THRESHOLD){
-			  printf("dark -> LED ON\r\n");
+			  printf("lux: %d -> dark -> LED ON\r\n", lux);
 			  stmSET_PB3_4_GPIO();
 		  }
 		  else{
-			  printf("bright -> LED OFF\r\n");
+			  printf("lux: %d -> bright -> LED OFF\r\n", lux);
 			  stmRESET_PB3_4_GPIO();
 		  }
 		  int pitch = ADXL345get();
-		  printf("pitch: %d\r\n", pitch);
-		  if(abs(pitch) < PITCH_THRESHOLD){
-			  printf("unnormal road -> Angle 45\r\n");
-			  Servo_control(45);
+		  if(pitch < PITCH_THRESHOLD){
+			  printf("pitch: %d, unnormal road -> Angle 0\r\n", pitch);
+			  Servo_control(0);
 		  }
 		  else{
-			  printf("normal road -> Angle 90\r\n");
-			  Servo_control(90);
+			  printf("pitch: %d, normal road -> Angle 45\r\n", pitch);
+			  Servo_control(45);
 		  }
 		  delayms(1000);
 	}

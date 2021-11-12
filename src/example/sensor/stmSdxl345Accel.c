@@ -116,7 +116,9 @@ void stmADXL345Loop()
 	while(1){
 		stmADXL345_ACCEL_ReadXYZ(acc); // read the x/y/z tilt
 	    printf("(x,y,z)= (%d,%d,%d)\r\n",acc[0],acc[1],acc[2]);
-		delayms(1000); // read every 0.1 seconds (10Hz)
+//	    printf("pitch: %d\r\n", (int) (10 * (atan(acc[0] / sqrt(acc[1] * acc[1] + acc[2] * acc[2])) * 180.0 / 3.14)));
+//	    printf("pitch: %d\r\n", (int) ())
+	    delayms(1000); // read every 0.1 seconds (10Hz)
 	}
 }
 
@@ -124,6 +126,6 @@ int ADXL345get()
 {
 	short acc[3];
 	stmADXL345_ACCEL_ReadXYZ(acc);
-	int pitch = 180 * atan(acc[0]/sqrt(acc[1]*acc[1] + acc[2]*acc[2])) / (3.14);
-			return pitch;
+	int pitch = (int) (10 * 180 * atan(acc[0]/sqrt(acc[1]*acc[1] + acc[2]*acc[2])) / (3.141592));
+	return pitch;
 }

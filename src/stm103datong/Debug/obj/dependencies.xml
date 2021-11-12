@@ -167,7 +167,7 @@
       <source file="..\..\..\stm_lib\inc\stm32f10x_rcc.h" lastModified="161f5697c33">
          <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
       </source>
-      <source file="..\..\..\example\sensor\stmSdxl345Accel.c" lastModified="17cdb819225">
+      <source file="..\..\..\example\sensor\stmSdxl345Accel.c" lastModified="17d13b74613">
          <include file="..\..\..\example\yInc.h"/>
          <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
          <include file="..\..\..\stm_lib\inc\stm32f10x_gpio.h"/>
@@ -534,7 +534,7 @@
       <source file="..\..\..\example\tdpipstack\lwip\src\loopif.c" lastModified="14fb03e82ca">
          <include file="..\..\..\example\tdpipstack\lwip\include\opt.h"/>
       </source>
-      <source file="..\..\..\example\motor\stmServoMotorLoop.c" lastModified="17ceda4c1f3">
+      <source file="..\..\..\example\motor\stmServoMotorLoop.c" lastModified="17d13e259ab">
          <include file="..\..\..\example\yInc.h"/>
          <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
          <include file="..\..\..\example\tdpipstack\lwip\include\init.h"/>
@@ -2277,7 +2277,7 @@
          <include file="..\..\..\stm_lib\inc\misc.h"/>
          <include file="..\..\..\example\yLib\cmdline.h"/>
       </source>
-      <source file="..\..\..\example\sensor\ap3216LightSensor.c" lastModified="17cdb723d62">
+      <source file="..\..\..\example\sensor\ap3216LightSensor.c" lastModified="17d13e09b53">
          <include file="..\..\..\example\yInc.h"/>
          <include file="..\..\..\stm_lib\inc\misc.h"/>
          <include file="..\..\..\example\tdpipstack\lwip\include\lwipopts.h"/>
@@ -2367,18 +2367,6 @@
          <include file="..\..\..\stm_lib\inc\stm32f10x_exti.h"/>
          <include file="..\..\..\stm_lib\inc\misc.h"/>
          <include file="..\..\..\example\yLib\cmdline.h"/>
-      </source>
-      <source file="..\..\..\main.c" lastModified="17cf7fb3f44">
-         <include file="..\..\..\example\yInc.h"/>
-         <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_gpio.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_rcc.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_tim.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_exti.h"/>
-         <include file="..\..\..\stm_lib\inc\misc.h"/>
-         <include file="..\..\..\cmsis\core_cm3.h"/>
-         <include file="..\..\..\example\yLib\ySpiDrv.h"/>
-         <include file="..\..\..\example\yLcdInc.h"/>
       </source>
       <source file="..\..\..\example\usb\inc\usb_init.h" lastModified="14b07650d30">
       </source>

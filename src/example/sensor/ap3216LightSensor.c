@@ -1125,34 +1125,6 @@ static void stmAp3216irq(int irq, void *data_)
 }
 */
 
-void AP3216setup(void)
-{
-    int byteh;
-    int bytel;
-    int var;
-    u8 retVal;
-    //float output;
-    unsigned short output;
-	u8 i;
-	u8 rxbuf[20];
-	u8 txbuf[2];
-	u8 ir_ps_InValid;
-	u8 ints;
-	unsigned short ird, msb, lsb;
-	u8 irvalid;
-	u8 mid,pid, rid;
-
-	printf("stmAp3216 Light Sensor Test with I2C1\r\n");
-
-
-	delayms(100);
-
-	stmAp3216_Init(1,1);//enable ALS, and PS
-
-
-	printf("...\r\n");
-}
-
 int AP3216get(void)
 {
 	return Ap3216_Show_Lux_api();

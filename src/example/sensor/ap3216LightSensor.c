@@ -986,7 +986,7 @@ void stmAp3216Loop (void)
 		Ap3216_Show_Lux_api();
 		Ap3216_Show_PsValue_api();
 		delayms(10);
-/*
+
 		 //IRQ Based
     	retVal = stmAp3216_CheckIrqThenServeIt();
     	if(retVal > 0){
@@ -1001,7 +1001,7 @@ void stmAp3216Loop (void)
 
     	//Ap3216_show_ALS_LOW_thres_api();
     	//Ap3216_show_ALS_HIGH_thres_api();
-*/
+
 
 
 /*

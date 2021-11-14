@@ -4,8 +4,8 @@
 <window>
 <fastViewData fastViewLocation="1024">
 <orientation position="512" view="org.eclipse.debug.ui.ExpressionView"/>
-<orientation position="512" view="org.coocox.component.ui.ComponentView"/>
 <orientation position="512" view="org.coocox.builder.ui.views.ProjectView"/>
+<orientation position="512" view="org.coocox.component.ui.ComponentView"/>
 <orientation position="512" view="org.coocox.codebugger.trace.ui.traceview"/>
 <orientation position="512" view="org.eclipse.cdt.ui.callHierarchy"/>
 <orientation position="512" view="org.eclipse.debug.ui.VariableView"/>
@@ -30,15 +30,15 @@
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/main.c" title="main.c" tooltip="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/stm103datong/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="40280" selectionTopPixel="30630"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="38220" selectionTopPixel="22130"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ap3216LightSensor.c" partName="ap3216LightSensor.c" path="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/example/sensor/ap3216LightSensor.c" title="ap3216LightSensor.c" tooltip="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/example/sensor/ap3216LightSensor.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/stm103datong/example/sensor/ap3216LightSensor.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="35984" selectionTopPixel="21770"/>
+<editorState selectionHorizontalPixel="0" selectionLength="19" selectionOffset="17440" selectionTopPixel="10240"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="stmAdxl345Accel.c" partName="stmAdxl345Accel.c" path="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/example/sensor/stmSdxl345Accel.c" title="stmAdxl345Accel.c" tooltip="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/example/sensor/stmSdxl345Accel.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/stm103datong/example/sensor/stmAdxl345Accel.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4685" selectionTopPixel="1770"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4401" selectionTopPixel="1770"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="stmServoMotorLoop.c" partName="stmServoMotorLoop.c" path="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/example/motor/stmServoMotorLoop.c" title="stmServoMotorLoop.c" tooltip="C:/Users/김경민/Desktop/Studies/KAU/수업/(4-2)전장시스템설계/윤종호교수님파일/Project01/stm103datong/example/motor/stmServoMotorLoop.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/stm103datong/example/motor/stmServoMotorLoop.c"/>
@@ -273,58 +273,9 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/stm103datong/example/sensor/stmAdxl345Accel.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/stm103datong/example/motor/stmServoMotorLoop.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/stm103datong/example/sensor/ap3216LightSensor.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/stm103datong/example/sensor/stmAdxl345Accel.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/stm103datong/example/sensor/ap3216LightSensor.c"/>
 </editors>
-<item historyLabel="stmAdxl345Accel.c" index="1">
-<position info="not_deleted" x="4668" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="38234" y="14"/>
-</item>
-<item historyLabel="stmServoMotorLoop.c" index="2">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="stmServoMotorLoop.c" index="2">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="15224" y="0"/>
-</item>
-<item historyLabel="stmServoMotorLoop.c" index="2">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="stmServoMotorLoop.c" index="2">
-<position/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="stmServoMotorLoop.c" index="2">
-<position info="not_deleted" x="13835" y="2"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="stmServoMotorLoop.c" index="2">
-<position info="not_deleted" x="13835" y="2"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="stmAdxl345Accel.c" index="1">
-<position info="not_deleted" x="4668" y="0"/>
-</item>
 <item historyLabel="stmServoMotorLoop.c" index="2">
 <position info="not_deleted" x="13822" y="0"/>
 </item>
@@ -421,8 +372,59 @@
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="37970" y="13"/>
 </item>
-<item active="true" historyLabel="main.c" index="0">
+<item historyLabel="main.c" index="0">
 <position info="not_deleted" x="37571" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position/>
+</item>
+<item historyLabel="stmAdxl345Accel.c" index="4">
+<position info="not_deleted" x="4626" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="16060" y="0"/>
+</item>
+<item historyLabel="stmAdxl345Accel.c" index="4">
+<position info="not_deleted" x="4038" y="14"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="16060" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="37524" y="0"/>
+</item>
+<item historyLabel="stmAdxl345Accel.c" index="4">
+<position info="not_deleted" x="4401" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="38091" y="0"/>
+</item>
+<item historyLabel="stmAdxl345Accel.c" index="4">
+<position info="not_deleted" x="4401" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="38349" y="0"/>
+</item>
+<item historyLabel="ap3216LightSensor.c" index="5">
+<position info="not_deleted" x="35980" y="0"/>
+</item>
+<item historyLabel="ap3216LightSensor.c" index="5">
+<position info="not_deleted" x="31962" y="0"/>
+</item>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="37967" y="0"/>
+</item>
+<item historyLabel="ap3216LightSensor.c" index="5">
+<position info="not_deleted" x="31962" y="0"/>
+</item>
+<item historyLabel="ap3216LightSensor.c" index="5">
+<position info="not_deleted" x="31451" y="19"/>
+</item>
+<item historyLabel="ap3216LightSensor.c" index="5">
+<position info="not_deleted" x="17440" y="19"/>
+</item>
+<item active="true" historyLabel="main.c" index="0">
+<position info="not_deleted" x="37967" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

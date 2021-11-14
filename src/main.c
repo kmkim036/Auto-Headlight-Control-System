@@ -362,7 +362,8 @@ extern void Servo_control(int angle);
 extern void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
 extern void GPIO_ResetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
 #define LUX_THRESHOLD 50
-#define PITCH_THRESHOLD 30
+#define PITCH_THRESHOLD_1 30
+#define PITCH_THRESHOLD_2 440
 
 void stmSET_PB3_4_GPIO()
 {
@@ -1099,6 +1100,15 @@ int main(void)
 	  // stmTjaNxpMC_Loop();
 	  //stmTea5767FmLoop();
 
+
+	  // original function
+//	  MOT_ServoLoop();
+//	  stmUsingPB3_4_AsGPIO();
+//	  stmAp3216Loop();
+//	  stmADXL345Loop();
+//	  stmCanLoop();
+//	  stmLinLoop();
+
 	  // kmkim
 	  stmAp3216_Init(1, 1);
 	  stmADXL345_ACCEL_Init();
@@ -1114,7 +1124,7 @@ int main(void)
 			  stmRESET_PB3_4_GPIO();
 		  }
 		  int pitch = ADXL345get();
-		  if(pitch < PITCH_THRESHOLD){
+		  if(pitch < PITCH_THRESHOLD_1 || pitch > PITCH_THRESHOLD_2){
 			  printf("pitch: %d, unnormal road -> Angle 0\r\n", pitch);
 			  Servo_control(0);
 		  }
@@ -1125,13 +1135,7 @@ int main(void)
 		  delayms(1000);
 	}
 
-	  // original function
-//	  MOT_ServoLoop();
-//	  stmUsingPB3_4_AsGPIO();
-//	  stmAp3216Loop();
-//	  stmADXL345Loop();
-//	  stmCanLoop();
-//	  stmLinLoop();
+
 
 #if (USE_DISPLAY == USE_DISPLAY_OLED)
 	//(5-2) OLED Display with I2C

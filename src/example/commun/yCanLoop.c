@@ -449,10 +449,15 @@ eResultStatus stmCAN_Send_StdMsg(unsigned msgId32, unsigned char Rtr, unsigned c
   yCAN_module.canMsgObject1.DLC		= dLen;			 //Data Length of 4
   memcpy(yCAN_module.canMsgObject1.Data, data, dLen); //Move 4 byte user data into CAN FIFO
 
-  //Start to transmit it. The return value is the mailbox number used to transmit.
+  // Start to transmit it. The return value is the mailbox number used to transmit.
   UsedTransmitMailboxNum = CAN_Transmit(CAN1,&yCAN_module.canMsgObject1);
-    //Initiates and transmits a CAN frame message. ret = The number of the mailbox that is used for transmission
-  while((CAN_TransmitStatus(CAN1,UsedTransmitMailboxNum) != CANTXOK) && (i < 0xFFF))  {    i++;  } //Checks the transmission status of a CAN Frame.
+  // Initiates and transmits a CAN frame message.
+  // ret = The number of the mailbox that is used for transmission
+
+  while((CAN_TransmitStatus(CAN1,UsedTransmitMailboxNum) != CANTXOK) && (i < 0xFFF)) {
+	  i++;
+  } // Checks the transmission status of a CAN Frame.
+
   if(i >= 0xFFF){
 	  ecode = CAN_GetLastErrorCode(CAN1);
 	  if(ecode == CAN_ErrorCode_BitRecessiveErr)//0x40
@@ -463,6 +468,8 @@ eResultStatus stmCAN_Send_StdMsg(unsigned msgId32, unsigned char Rtr, unsigned c
 		  printf("CAN> Tx Fail(errCode=0x30: CAN_ErrorCode_ACKErr)\r\n");
 	  else if(ecode == CAN_ErrorCode_CRCErr)//0x30
 		  printf("CAN> Tx Fail(errCode=0x60: CAN_ErrorCode_CRCErr)\r\n");
+	  else
+		  printf("CAN> Tx Fail(errCode=0x%02x)\r\n",ecode);
 	  /*
 #define CAN_ErrorCode_NoErr           ((uint8_t)0x00)
 #define	CAN_ErrorCode_StuffErr        ((uint8_t)0x10)
@@ -473,8 +480,6 @@ eResultStatus stmCAN_Send_StdMsg(unsigned msgId32, unsigned char Rtr, unsigned c
 #define	CAN_ErrorCode_CRCErr          ((uint8_t)0x60)
 #define	CAN_ErrorCode_SoftwareSetErr  ((uint8_t)0x70)
 	  */
-	  else
-		  printf("CAN> Tx Fail(errCode=0x%02x)\r\n",ecode);
   }else
 	  printf("CAN> TxDone.\r\n");
 
@@ -482,6 +487,7 @@ eResultStatus stmCAN_Send_StdMsg(unsigned msgId32, unsigned char Rtr, unsigned c
   CAN_CancelTransmit(CAN1,UsedTransmitMailboxNum);
 
 }
+
 //Send CAN Msg with Extended Format (msgID leng = 29bits)
 //Extended ID = 0x1234; DLC=2; Data= 0xde,0xca
 eResultStatus stmCAN_Send_Ext(void)
@@ -503,11 +509,11 @@ eResultStatus stmCAN_Send_Ext(void)
 void stmCanShowRxMsg(void)
 {
 	int i=0;
-	if(yCAN_module.RxMessage.IDE != CAN_ID_STD){
+
+	if(yCAN_module.RxMessage.IDE != CAN_ID_STD)
 		printf("RX>ExtentedMsgID=0x%04x(len=%u) ", yCAN_module.RxMessage.ExtId, yCAN_module.RxMessage.DLC);
-	}else{
+	else
 		printf("RX>StandardMsgID=0x%04x(len=%u) ",  yCAN_module.RxMessage.StdId, yCAN_module.RxMessage.DLC);
-	}
 
 	if (yCAN_module.RxMessage.DLC){
 		printf("Data=");
@@ -521,7 +527,6 @@ void stmCanShowRxMsg(void)
 		printf(" : NORMAL FREAME \r\n");
 
 	//CAN_ClearFlag(CAN_FLAG_FF0);
-
 
   //stmLedToggle(); //stmUserLED_ON(); //indicates rx. (PC14)
 	  printf("CAN> Rx Succ(%u)\r\n",yCAN_module.RxCnt);
@@ -621,18 +626,16 @@ unsigned char stmCAN_Receive_by_Polling(void)
 }
 #elif (USE_CAN_MODE == 	USE_CAN_MODE_INTERRUPT)
 void stmCanInterruptConfig(void){
-
 	yCAN_module.RxStatus = YCAN_RX_NO_FRAMES;
 	// Enable CAN FIFO0 message pending interrupt.
 	CAN_ITConfig(CAN1,CAN_IT_FMP0 | CAN_IT_BOF, ENABLE);//Enables the specified CANx interrupts.
                                                     //a) CAN_IT_FMP0= FIFO 0 message pending Interrupt on Rx msg
 													//b) CAN_IT_BOF = BUS OFF error Interrupt
-
 }
 
-	// This function handles CAN1 RX0 interrupts
-	#if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F107VCT6)|| (PROCESSOR == PROCESSOR_GD32F130FX))
-	void USB_LP_CAN1_RX0_IRQHandler(void) //but...void CAN1_RX1_IRQHandler(void) -- Not working
+// This function handles CAN1 RX0 interrupts
+#if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F107VCT6)|| (PROCESSOR == PROCESSOR_GD32F130FX))
+void USB_LP_CAN1_RX0_IRQHandler(void) //but...void CAN1_RX1_IRQHandler(void) -- Not working
 {
 		if (CAN_GetITStatus(CAN1,CAN_IT_FMP0)) //FIFO 0 Message Pending Flag = 1, if we receive CAN msg.
 		{
@@ -768,7 +771,6 @@ void stmCAN_ReceiveTestLoop(void)
 	  //delayms(10);
 	}
 #elif (USE_CAN_MODE == 	USE_CAN_MODE_INTERRUPT)
-
 	printf("CAN_IT Config\r\n");
 	// Enable CAN FIFO0 message pending interrupt.
 	CAN_ITConfig(CAN1,CAN_IT_FMP0 | CAN_IT_BOF, ENABLE);//Enables the specified CANx interrupts.
@@ -825,3 +827,50 @@ int stmCanLoop(void)
 #endif
 }
 #endif
+
+void CAN_SEND_CMD(char led, char servo)
+{
+	stmCan_Config(100000);//100Kbps.
+	unsigned char sndMsg[2];
+	sndMsg[0] = led;
+	sndMsg[1] = servo;
+	stmCAN_Send_StdMsg(CAN_MSG_ID0555, CAN_RTR_DATA, 2, sndMsg);
+}
+
+int CAN_RECEIVE_CMD()
+{
+	stmCan_Config(100000);//100Kbps.
+	int ret = 0;
+
+	//Enables the specified CANx interrupts.
+	CAN_ITConfig(CAN1,CAN_IT_FMP0 | CAN_IT_BOF, ENABLE);
+	//a) CAN_IT_FMP0= FIFO 0 message pending Interrupt on Rx msg
+	//b) CAN_IT_BOF = BUS OFF error Interrupt
+
+	if (yCAN_module.RxStatus == YCAN_RX_WE_HAVE_FRAMES ) {
+		//if we got the rx msg.
+		int i;
+		char buf[2];
+		if (yCAN_module.RxMessage.DLC){
+			printf("Data=");
+			for(i=0; i< yCAN_module.RxMessage.DLC; i++){
+				buf[i] = yCAN_module.RxMessage.Data[i];
+				printf("%d: %02x ", i, yCAN_module.RxMessage.Data[i]);
+			}
+		}
+		yCAN_module.RxStatus = YCAN_RX_NO_FRAMES; //reset for next rx.
+		ret = buf[0] << 1 | buf[1];
+	}
+	else if( yCAN_module.RxStatus == YCAN_RX_SOME_ERROR) {
+		printf("CAN> Rx Bus Off...\r\n");
+		ret = -1;
+	}
+	else if( yCAN_module.RxStatus == YCAN_RX_NO_FRAMES) {
+		printf("CAN> Rx No Frame...\r\n");
+		ret = -1;
+	}
+	//disable interrupt handling
+	CAN_ITConfig(CAN1,CAN_IT_FMP0, DISABLE);
+	return ret;
+}
+

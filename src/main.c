@@ -353,6 +353,8 @@ extern void stmArinc429_ReceiverLoop();
 extern void tca8418_loop();
 
 // kmkim
+//#define SENSOR_MODE
+//#define ACTUATOR_MODE
 extern int stmAp3216_Init(unsigned char enALS, unsigned char enPS);
 extern int AP3216get();
 extern void stmADXL345_ACCEL_Init();
@@ -361,6 +363,8 @@ extern void Servo_Setup();
 extern void Servo_control(int angle);
 extern void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
 extern void GPIO_ResetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);
+extern void CAN_SEND_CMD(char led, char servo);
+extern int CAN_RECEIVE_CMD();
 #define LUX_THRESHOLD 50
 #define PITCH_THRESHOLD_1 30
 #define PITCH_THRESHOLD_2 440
@@ -1110,6 +1114,34 @@ int main(void)
 //	  stmLinLoop();
 
 	  // kmkim
+#if defined(SENSOR_MODE)	// sensor mode
+	  while(1) {
+		  stmAp3216_Init(1, 1);
+		  stmADXL345_ACCEL_Init();
+		  int lux = AP3216get();
+		  char led = (lux < LUX_THRESHOLD) ? 1 : 0;
+		  int pitch = ADXL345get();
+		  char servo = (pitch < PITCH_THRESHOLD_1 || pitch > PITCH_THRESHOLD_2) ? 1 : 0;
+		  CAN_SEND_CMD(led, servo);
+		  delayms(1000);
+	  }
+#elif defined(ACTUATOR_MODE) 	// actuator mode
+	  while(1) {
+		  int ret = CAN_RECEIVE_CMD();
+		  if (ret < 0)
+			  continue;
+		  else{
+			  if(ret && 0x0002)
+				  stmSET_PB3_4_GPIO();
+			  else
+				  stmRESET_PB3_4_GPIO();
+			  if(ret && 0x0001)
+				  Servo_control(0);
+			  else
+				  Servo_control(45);
+		  }
+	  }
+#else
 	  stmAp3216_Init(1, 1);
 	  stmADXL345_ACCEL_Init();
 	  Servo_Setup();
@@ -1134,6 +1166,7 @@ int main(void)
 		  }
 		  delayms(1000);
 	}
+#endif
 
 
 

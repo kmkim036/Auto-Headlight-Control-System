@@ -96,11 +96,11 @@
     <File name="example/usb/src/usb_core.c" path="example/usb/src/usb_core.c" type="1"/>
     <File name="cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
     <File name="example/yLib/eth/stm32f1x7_eth_bsp.c" path="example/yLib/eth/stm32f1x7_eth_bsp.c" type="1"/>
+    <File name="example/lwip/src" path="" type="2"/>
     <File name="example/ptpstm/include/datatypes.h" path="example/ptpstm/include/datatypes.h" type="1"/>
     <File name="example/ether/w5500.c" path="example/ether/w5500.c" type="1"/>
-    <File name="example/lwip/src" path="" type="2"/>
+    <File name="example/sensor/stmAdxl345Accel.c" path="example/sensor/stmAdxl345Accel.c" type="1"/>
     <File name="example/yLib/cmdline.h" path="example/yLib/cmdline.h" type="1"/>
-    <File name="example/sensor/stmAdxl345Accel.c" path="example/sensor/stmSdxl345Accel.c" type="1"/>
     <File name="cmsis_boot/stm32f10x_conf.h" path="cmsis_boot/stm32f10x_conf.h" type="1"/>
     <File name="example/display/stmSpiSt7789_Gauge_IPS240X240LCD.c" path="example/display/stmSpiSt7789_Gauge_IPS240X240LCD.c" type="1"/>
     <File name="example/lwip/src/core/ipv4/ip_addr.c" path="example/tdpipstack/lwip/src/core/ipv4/ip_addr.c" type="1"/>
@@ -137,9 +137,9 @@
     <File name="example/proj/LinWithStepperProj/LinWithStepperProj.c" path="example/proj/LinWithStepperProj/LinWithStepperProj.c" type="1"/>
     <File name="example/yLib/eth/include/ethopts.h" path="example/yLib/eth/include/ethopts.h" type="1"/>
     <File name="example/ether/include/ymdio.h" path="example/ether/include/ymdio.h" type="1"/>
+    <File name="example/usb/inc/usb_core.h" path="example/usb/inc/usb_core.h" type="1"/>
     <File name="cmsis_boot/hw_config.h" path="example/usb/inc/hw_config.h" type="1"/>
     <File name="example/lwip/include/snmp_structs.h" path="example/tdpipstack/lwip/include/snmp_structs.h" type="1"/>
-    <File name="example/usb/inc/usb_core.h" path="example/usb/inc/usb_core.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_dma.c" path="stm_lib/src/stm32f10x_dma.c" type="1"/>
     <File name="stm_lib/src/stm32f10x_lib.c" path="stm_lib/src/stm32f10x_lib.c" type="1"/>
     <File name="example/avionics/selcal" path="" type="2"/>
@@ -201,18 +201,18 @@
     <File name="example" path="" type="2"/>
     <File name="example/clockgen/si5328.h" path="example/clockgen/si5328.h" type="1"/>
     <File name="example/lwip/src/core/init.c" path="example/tdpipstack/lwip/src/core/init.c" type="1"/>
+    <File name="example/lwip/src/api/netdb.c" path="example/tdpipstack/lwip/src/api/netdb.c" type="1"/>
     <File name="example/avionics/tca8418_mcdu.c" path="example/avionics/tca8418_mcdu.c" type="1"/>
     <File name="example/lwip/src/etharp.c" path="example/tdpipstack/lwip/src/etharp.c" type="1"/>
-    <File name="example/lwip/src/api/netdb.c" path="example/tdpipstack/lwip/src/api/netdb.c" type="1"/>
     <File name="example/audio/stmTea5767Drv.c" path="example/audio/stmTea5767Drv.c" type="1"/>
     <File name="example/audio/stmMCP4725DACi2c.c" path="example/audio/stmMCP4725DACi2c.c" type="1"/>
     <File name="example/wireless" path="" type="2"/>
     <File name="stm_lib/src/stm32f10x_usart.c" path="stm_lib/src/stm32f10x_usart.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_rtc.h" path="stm_lib/inc/stm32f10x_rtc.h" type="1"/>
     <File name="example/yLib/yUtil.c" path="example/yLib/yUtil.c" type="1"/>
+    <File name="example/sensor/pm2008mI2C.c" path="example/sensor/pm2008mI2C.c" type="1"/>
     <File name="example/ptpstm/include/constants.h" path="example/ptpstm/include/constants.h" type="1"/>
     <File name="example/lwip/include/api_msg.h" path="example/tdpipstack/lwip/include/api_msg.h" type="1"/>
-    <File name="example/sensor/pm2008mI2C.c" path="example/sensor/pm2008mI2C.c" type="1"/>
     <File name="example/lwip/include/opt.h" path="example/tdpipstack/lwip/include/opt.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_pwr.c" path="stm_lib/src/stm32f10x_pwr.c" type="1"/>
     <File name="example/lwip/include/etharp.h" path="example/tdpipstack/lwip/include/etharp.h" type="1"/>
@@ -266,9 +266,9 @@
     <File name="example/yLib/yCan.h" path="example/yLib/yCan.h" type="1"/>
     <File name="example/yLib/inet/inet.h" path="example/yLib/inet/inet.h" type="1"/>
     <File name="example/yLib/err.h" path="example/yLib/err.h" type="1"/>
+    <File name="example/lwip/src/api/err.c" path="example/tdpipstack/lwip/src/api/err.c" type="1"/>
     <File name="example/usb/inc/usb_pwr.h" path="example/usb/inc/usb_pwr.h" type="1"/>
     <File name="example/lwip/include/netifapi.h" path="example/tdpipstack/lwip/include/netifapi.h" type="1"/>
-    <File name="example/lwip/src/api/err.c" path="example/tdpipstack/lwip/src/api/err.c" type="1"/>
     <File name="example/common/stmPcf8574.c" path="example/common/stmPcf8574.c" type="1"/>
     <File name="example/motor/tb6612MotorLoop.c" path="example/motor/tb6612MotorLoop.c" type="1"/>
     <File name="example/yLib/eth/include/ymdio.h" path="example/yLib/eth/include/ymdio.h" type="1"/>
@@ -293,9 +293,9 @@
     <File name="syscalls/syscalls.c" path="syscalls/syscalls.c" type="1"/>
     <File name="example/common/usart.c" path="example/common/usart.c" type="1"/>
     <File name="example/motor/DualH_Drv8833MotorLoop.c" path="example/motor/DualH_Drv8833MotorLoop.c" type="1"/>
+    <File name="stm_lib/inc/stm32f10x_dma.h" path="stm_lib/inc/stm32f10x_dma.h" type="1"/>
     <File name="example/motor/yPwmLoop.c" path="example/motor/yPwmLoop.c" type="1"/>
     <File name="stm_lib/src/stm32f10x_adc.c" path="stm_lib/src/stm32f10x_adc.c" type="1"/>
-    <File name="stm_lib/inc/stm32f10x_dma.h" path="stm_lib/inc/stm32f10x_dma.h" type="1"/>
     <File name="example/lwip/include/debug.h" path="example/tdpipstack/lwip/include/debug.h" type="1"/>
     <File name="example/lwip/include/httpd.c" path="example/tdpipstack/lwip/include/httpd.c" type="1"/>
     <File name="example/lwip/include/netconf.h" path="example/tdpipstack/lwip/include/netconf.h" type="1"/>

@@ -167,19 +167,6 @@
       <source file="..\..\..\stm_lib\inc\stm32f10x_rcc.h" lastModified="161f5697c33">
          <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
       </source>
-      <source file="..\..\..\example\sensor\stmSdxl345Accel.c" lastModified="17d17267713">
-         <include file="..\..\..\example\yInc.h"/>
-         <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_gpio.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_usart.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_i2c.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_rcc.h"/>
-         <include file="..\..\..\stm_lib\inc\stm32f10x_exti.h"/>
-         <include file="..\..\..\stm_lib\inc\misc.h"/>
-         <include file="..\..\..\example\yLib\cmdline.h"/>
-         <include file="..\..\..\stm_lib\inc\misc.h"/>
-         <include file="..\..\..\example\tdpipstack\lwip\include\lwipopts.h"/>
-      </source>
       <source file="..\..\..\example\tdpipstack\lwip\include\udp.h" lastModified="169ffa539cb">
          <include file="..\..\..\example\tdpipstack\lwip\include\opt.h"/>
          <include file="..\..\..\example\tdpipstack\lwip\include\pbuf.h"/>
@@ -1154,6 +1141,19 @@
       </source>
       <source file="..\..\..\stm_lib\inc\stm32f10x_dbgmcu.h" lastModified="11c83115030">
          <include file="..\..\..\stm_lib\inc\stm32f10x_map.h"/>
+      </source>
+      <source file="..\..\..\example\sensor\stmAdxl345Accel.c" lastModified="17d2358829b">
+         <include file="..\..\..\example\yInc.h"/>
+         <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
+         <include file="..\..\..\stm_lib\inc\stm32f10x_gpio.h"/>
+         <include file="..\..\..\stm_lib\inc\stm32f10x_usart.h"/>
+         <include file="..\..\..\stm_lib\inc\stm32f10x_i2c.h"/>
+         <include file="..\..\..\stm_lib\inc\stm32f10x_rcc.h"/>
+         <include file="..\..\..\stm_lib\inc\stm32f10x_exti.h"/>
+         <include file="..\..\..\stm_lib\inc\misc.h"/>
+         <include file="..\..\..\example\yLib\cmdline.h"/>
+         <include file="..\..\..\stm_lib\inc\misc.h"/>
+         <include file="..\..\..\example\tdpipstack\lwip\include\lwipopts.h"/>
       </source>
       <source file="..\..\..\example\ether\include\ksz8794.h" lastModified="171541a00c4">
          <include file="..\..\..\example\yInc.h"/>
@@ -2177,7 +2177,7 @@
       </source>
       <source file="..\..\..\stm_lib\inc\stm32f10x_nvic.h" lastModified="16556b84b54">
       </source>
-      <source file="..\..\..\example\commun\yCanLoop.c" lastModified="17a28f19a6a">
+      <source file="..\..\..\example\commun\yCanLoop.c" lastModified="17d23a8d8f1">
          <include file="..\..\..\example\yInc.h"/>
          <include file="..\..\..\cmsis_boot\stm32f10x.h"/>
          <include file="..\..\..\stm_lib\inc\stm32f10x_can.h"/>

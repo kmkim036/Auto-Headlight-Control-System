@@ -1,7 +1,12 @@
 # Program Language  
 C    
 # When  
-From October 2021  
+Senior, 2nd semester in Automobile Electric System Design Class  
 # Description  
-Control headlight system automatically  with Light sensor, Acceleration sensor, CAN communication and Servo motor  
+## Automatic Headlight Control System
+Measure data with Light sensor and Acceleration sensor  
+
+Control LED and Servo Motor  
+
+Use CAN communication to command  
 

@@ -438,16 +438,17 @@ int MOT_ServoLoop(void)
 	}
 }
 
+void Servo_control(unsigned short angle)
+{
+	MOT_ServoControl(angle);
+}
+
 void Servo_Setup()
 {
 	PWM_PINx_init();
 	TIM3_ini();
 }
 
-void Servo_control(int angle)
-{
-	MOT_ServoControl(angle);
-}
 
 #endif
 

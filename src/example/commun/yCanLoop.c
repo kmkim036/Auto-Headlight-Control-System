@@ -830,7 +830,6 @@ int stmCanLoop(void)
 
 void CAN_SEND_CMD(char led, char servo)
 {
-	stmCan_Config(100000);//100Kbps.
 	unsigned char sndMsg[2];
 	sndMsg[0] = led;
 	sndMsg[1] = servo;
@@ -839,7 +838,6 @@ void CAN_SEND_CMD(char led, char servo)
 
 int CAN_RECEIVE_CMD()
 {
-	stmCan_Config(100000);//100Kbps.
 	int ret = 0;
 
 	//Enables the specified CANx interrupts.
@@ -847,28 +845,28 @@ int CAN_RECEIVE_CMD()
 	//a) CAN_IT_FMP0= FIFO 0 message pending Interrupt on Rx msg
 	//b) CAN_IT_BOF = BUS OFF error Interrupt
 
-	if (yCAN_module.RxStatus == YCAN_RX_WE_HAVE_FRAMES ) {
-		//if we got the rx msg.
-		int i;
-		char buf[2];
-		if (yCAN_module.RxMessage.DLC){
-			printf("Data=");
-			for(i=0; i< yCAN_module.RxMessage.DLC; i++){
-				buf[i] = yCAN_module.RxMessage.Data[i];
-				printf("%d: %02x ", i, yCAN_module.RxMessage.Data[i]);
-			}
-		}
-		yCAN_module.RxStatus = YCAN_RX_NO_FRAMES; //reset for next rx.
-		ret = buf[0] << 1 | buf[1];
+	while(1){
+	 	  if (yCAN_module.RxStatus == YCAN_RX_WE_HAVE_FRAMES ) //if we got the rx msg.
+	 	  {
+	 		 int i;
+	 		 char buf[2];
+	 		 if (yCAN_module.RxMessage.DLC){
+//	 			 printf("Data=");
+	 			 for(i=0; i< yCAN_module.RxMessage.DLC; i++){
+	 				 buf[i] = yCAN_module.RxMessage.Data[i];
+//	 				 printf("%d: %02x ", i, yCAN_module.RxMessage.Data[i]);
+	 			 }
+	 		 }
+	 		 ret = buf[0] << 1 | buf[1];
+	 		 yCAN_module.RxStatus = YCAN_RX_NO_FRAMES; //reset for next rx.
+	 		 break;
+	 	  }
+	 	  else if( yCAN_module.RxStatus == YCAN_RX_SOME_ERROR){
+	 		  printf("CAN> Rx Bus Off...\r\n");
+	 	  }
+		  delayms(1);
 	}
-	else if( yCAN_module.RxStatus == YCAN_RX_SOME_ERROR) {
-		printf("CAN> Rx Bus Off...\r\n");
-		ret = -1;
-	}
-	else if( yCAN_module.RxStatus == YCAN_RX_NO_FRAMES) {
-		printf("CAN> Rx No Frame...\r\n");
-		ret = -1;
-	}
+
 	//disable interrupt handling
 	CAN_ITConfig(CAN1,CAN_IT_FMP0, DISABLE);
 	return ret;

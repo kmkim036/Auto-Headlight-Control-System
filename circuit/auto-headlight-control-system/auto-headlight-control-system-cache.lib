@@ -1,0 +1,161 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Connector_Conn_01x01_Female
+#
+DEF Connector_Conn_01x01_Female J 0 40 Y N 1 F N
+F0 "J" 0 100 50 H V C CNN
+F1 "Connector_Conn_01x01_Female" 0 -100 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Connector*:*
+$ENDFPLIST
+DRAW
+A 0 0 20 901 -901 1 1 6 N 0 20 0 -20
+P 2 1 1 6 -50 0 -20 0 N
+X Pin_1 1 -200 0 150 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Device_R
+#
+DEF Device_R R 0 0 N Y 1 F N
+F0 "R" 80 0 50 V V C CNN
+F1 "Device_R" 0 0 50 V V C CNN
+F2 "" -70 0 50 V I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ R_*
+$ENDFPLIST
+DRAW
+S -40 -100 40 100 0 1 10 N
+X ~ 1 0 150 50 D 50 50 1 1 P
+X ~ 2 0 -150 50 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# auto-headlight-control-system_ADXL345
+#
+DEF auto-headlight-control-system_ADXL345 S 0 40 Y Y 1 F N
+F0 "S" 0 0 50 H V C CNN
+F1 "auto-headlight-control-system_ADXL345" 0 50 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+X SCL 1 50 -100 100 L 50 50 1 1 I
+X SDA 2 50 -200 100 L 50 50 1 1 I
+X NC 3 50 -300 100 L 50 50 1 1 I
+X NC 4 50 -400 100 L 50 50 1 1 I
+X GND 5 50 -500 100 L 50 50 1 1 I
+X VCC 6 50 -600 100 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# auto-headlight-control-system_AP3216
+#
+DEF auto-headlight-control-system_AP3216 S 0 40 Y Y 1 F N
+F0 "S" 0 0 50 H V C CNN
+F1 "auto-headlight-control-system_AP3216" 0 50 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+X GND 1 50 -100 100 L 50 50 1 1 I
+X VCC 2 50 -200 100 L 50 50 1 1 I
+X SCL 3 50 -300 100 L 50 50 1 1 I
+X SDA 4 50 -400 100 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# auto-headlight-control-system_SG90
+#
+DEF auto-headlight-control-system_SG90 M 0 40 Y Y 1 F N
+F0 "M" 0 0 50 H V C CNN
+F1 "auto-headlight-control-system_SG90" 0 50 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+X PWM 1 50 -100 100 L 50 50 1 1 I
+X VCC 2 50 -200 100 L 50 50 1 1 I
+X GND 3 50 -300 100 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# auto-headlight-control-system_SN65HVD230
+#
+DEF auto-headlight-control-system_SN65HVD230 T 0 40 Y Y 1 F N
+F0 "T" 0 0 50 H V C CNN
+F1 "auto-headlight-control-system_SN65HVD230" 0 50 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+X VCC 1 50 -100 100 L 50 50 1 1 W
+X GND 2 50 -200 100 L 50 50 1 1 W
+X CAN_RX 3 50 -300 100 L 50 50 1 1 I
+X CAN_TX 4 50 -400 100 L 50 50 1 1 O
+ENDDRAW
+ENDDEF
+#
+# auto-headlight-control-system_STM32_L
+#
+DEF auto-headlight-control-system_STM32_L U 0 40 Y Y 1 F N
+F0 "U" 0 0 50 H V C CNN
+F1 "auto-headlight-control-system_STM32_L" 0 50 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+X B12 1 -50 -100 100 R 50 50 1 1 B
+X A15 10 -50 -1000 100 R 50 50 1 1 B
+X B3 11 -50 -1100 100 R 50 50 1 1 B
+X B4 12 -50 -1200 100 R 50 50 1 1 B
+X B5 13 -50 -1300 100 R 50 50 1 1 B
+X B6 14 -50 -1400 100 R 50 50 1 1 B
+X B7 15 -50 -1500 100 R 50 50 1 1 B
+X B8 16 -50 -1600 100 R 50 50 1 1 B
+X B9 17 -50 -1700 100 R 50 50 1 1 B
+X 5V 18 -50 -1800 100 R 50 50 1 1 w
+X GND 19 -50 -1900 100 R 50 50 1 1 w
+X B13 2 -50 -200 100 R 50 50 1 1 B
+X 3V3 20 -50 -2000 100 R 50 50 1 1 w
+X B14 3 -50 -300 100 R 50 50 1 1 B
+X B15 4 -50 -400 100 R 50 50 1 1 B
+X A8 5 -50 -500 100 R 50 50 1 1 B
+X A9 6 -50 -600 100 R 50 50 1 1 B
+X A10 7 -50 -700 100 R 50 50 1 1 B
+X A11 8 -50 -800 100 R 50 50 1 1 B
+X A12 9 -50 -900 100 R 50 50 1 1 B
+ENDDRAW
+ENDDEF
+#
+# auto-headlight-control-system_STM32_R
+#
+DEF auto-headlight-control-system_STM32_R U 0 40 Y Y 1 F N
+F0 "U" 0 0 50 H V C CNN
+F1 "auto-headlight-control-system_STM32_R" 0 50 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+X GND 1 50 -100 100 L 50 50 1 1 w
+X A6 10 50 -1000 100 L 50 50 1 1 B
+X A5 11 50 -1100 100 L 50 50 1 1 B
+X A4 12 50 -1200 100 L 50 50 1 1 B
+X A3 13 50 -1300 100 L 50 50 1 1 B
+X A2 14 50 -1400 100 L 50 50 1 1 B
+X A1 15 50 -1500 100 L 50 50 1 1 B
+X A0 16 50 -1600 100 L 50 50 1 1 B
+X C15 17 50 -1700 100 L 50 50 1 1 B
+X C14 18 50 -1800 100 L 50 50 1 1 B
+X C13 19 50 -1900 100 L 50 50 1 1 B
+X GND 2 50 -200 100 L 50 50 1 1 w
+X VB 20 50 -2000 100 L 50 50 1 1 w
+X 3V3 3 50 -300 100 L 50 50 1 1 w
+X R 4 50 -400 100 L 50 50 1 1 I
+X B11 5 50 -500 100 L 50 50 1 1 B
+X B10 6 50 -600 100 L 50 50 1 1 B
+X B1 7 50 -700 100 L 50 50 1 1 B
+X B0 8 50 -800 100 L 50 50 1 1 B
+X A7 9 50 -900 100 L 50 50 1 1 B
+ENDDRAW
+ENDDEF
+#
+#End Library

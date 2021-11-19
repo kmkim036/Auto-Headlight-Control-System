@@ -81,20 +81,20 @@
 //*H= Active High/L=Active Low
 //TBD
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
 #include "yInc.h"
-#if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6)  || (PROCESSOR == PROCESSOR_STM32F107VCT) || (PROCESSOR == PROCESSOR_GD32F130FX))
-#include "stm32f10x.h"
-#include "stm32f10x_gpio.h"
-#include "stm32f10x_rcc.h"//Reset and Clock Control
-#include "stm32f10x_tim.h"
-#include "stm32f10x_exti.h"
-#include "misc.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT) || (PROCESSOR == PROCESSOR_GD32F130FX))
 #include "core_cm3.h"
-#include "ySpiDrv.h"
+#include "misc.h"
+#include "stm32f10x.h"
+#include "stm32f10x_exti.h"
+#include "stm32f10x_gpio.h"
+#include "stm32f10x_rcc.h" //Reset and Clock Control
+#include "stm32f10x_tim.h"
 #include "yLcdInc.h"
+#include "ySpiDrv.h"
 //#include "lwip/include/lwipopts.h"
 #else
 printf("Not Support\r\n");
@@ -115,32 +115,32 @@ printf("Not Support\r\n");
 //#include "ethernet_board_support.h"
 
 //============Globals ======================
-volatile uint32_t gTimingDelay =0;
-volatile uint32_t g_tickCnt=0;
-uint32_t g_tickEvent=0;
+volatile uint32_t gTimingDelay = 0;
+volatile uint32_t g_tickCnt = 0;
+uint32_t g_tickEvent = 0;
 volatile u8 g_mac_addr[6];
-I2C_TypeDef *gI2Cx;
+I2C_TypeDef* gI2Cx;
 uint32_t randNum32;
 //============ Extern Variables ======================
 extern bool g_OzLED_InitDone;
 extern unsigned char g_bI2CModuleConfigDone;
-extern unsigned char g_ip_addr3;//in netconf.c
+extern unsigned char g_ip_addr3; //in netconf.c
 extern int g_INT2_LIS3DH, g_INT1_LIS3DH;
 unsigned char g_macaddrLsb;
 extern struct _usart1rxbuf g_usart1rxbuf;
 
 //============= Extern Functions =====================
 //- Utils
-extern signed int yprintf(const char *pFormat, ...);
+extern signed int yprintf(const char* pFormat, ...);
 extern void stmI2cModuleConfig(I2C_TypeDef* I2Cx, u32 I2Cspeed);
-extern void stm_I2C_Init(I2C_TypeDef * I2Cx,u32 I2Cspeed) ;
+extern void stm_I2C_Init(I2C_TypeDef* I2Cx, u32 I2Cspeed);
 extern void delayx(unsigned int ms);
 extern void somedelay(volatile uint32_t nCount);
 extern unsigned long micros();
 unsigned long millis();
-extern char *float2str(float x);
-extern void PrintCharBsp(char c);//PrintChar(char c);
-extern signed int printf(const char *pFormat, ...);
+extern char* float2str(float x);
+extern void PrintCharBsp(char c); //PrintChar(char c);
+extern signed int printf(const char* pFormat, ...);
 
 //Uarts
 extern void stmUsart3_Init(unsigned int baud);
@@ -164,32 +164,32 @@ extern void rngLoop(void);
 extern uint32_t rngConfigAndGetRand(void);
 
 extern void stmMCP3201Loop(); //ADC-spi
-extern void stmMCP3208AdcLoop();//ADC-spi
+extern void stmMCP3208AdcLoop(); //ADC-spi
 extern void stmMCP2515Loop();
 extern void stmMCP23008_Loop();
 extern void tcm3105FskModemLoop(unsigned char uartId); //FSK-MODEM-300bps
 extern void stmDmx512MasterLoop(void); //RS485-DMX512
 
 //Sensors
-extern void stmTC77_ReadTemperatureLoop(); 		//SPI
-extern void stmLm75TempSensorI2cLoop (void); 	//I2C
-extern void stmBmp280loop() ; 					//Barometer
-extern void si7021_loop(); 						//Humidity
-extern void pm2008i2c_loop();					//pm2008m DustSensor I2C
+extern void stmTC77_ReadTemperatureLoop(); //SPI
+extern void stmLm75TempSensorI2cLoop(void); //I2C
+extern void stmBmp280loop(); //Barometer
+extern void si7021_loop(); //Humidity
+extern void pm2008i2c_loop(); //pm2008m DustSensor I2C
 
-extern void stmAp3216Loop (void); 				//Ambient Lux /proximity Sensor
+extern void stmAp3216Loop(void); //Ambient Lux /proximity Sensor
 extern int stmAp3216_Init(unsigned char enALS, unsigned char enPS);
 extern eResultStatus Ap3216_Show_PsValue_api();
-extern void stmAPDS9960Loop (void);				//Ambient Lux /proximity/Gesture Sensor
-extern void stmVL53L0X_loop();    				//Proximity Sensor (LIDAR)
+extern void stmAPDS9960Loop(void); //Ambient Lux /proximity/Gesture Sensor
+extern void stmVL53L0X_loop(); //Proximity Sensor (LIDAR)
 
-extern void stmLIS3DH_Loop(); 					//3-axis accelerometer
+extern void stmLIS3DH_Loop(); //3-axis accelerometer
 extern uint8_t LIS3DH_readRegister8(uint8_t reg);
 extern u8 stmLIS3DH_getInt1src();
-extern void stmLIS3MDL_Loop(); 					//magnetometer
-extern void stmMPU6050Loop();					//
+extern void stmLIS3MDL_Loop(); //magnetometer
+extern void stmMPU6050Loop(); //
 
-extern void stmAs5600_Loop();					//Motor rotation counter hall sensor
+extern void stmAs5600_Loop(); //Motor rotation counter hall sensor
 extern short stmAs5600_GetDegree();
 
 extern void dh11_loop();
@@ -199,15 +199,15 @@ extern int GP2Y_Loop(void); //dust sensor with adc
 extern void stmRelayControlLoop(void);
 extern void stmDualSolenoidControlLoop(void);
 
-extern void stmTb6612Loop();					//Dual H-bridge DC Motor Driver
-extern void stmStepper_Loop(void);				//Bit-bang Stepper
-extern void stmA3967BipolarMotorLoop();			//Microstep Stepper Driver
+extern void stmTb6612Loop(); //Dual H-bridge DC Motor Driver
+extern void stmStepper_Loop(void); //Bit-bang Stepper
+extern void stmA3967BipolarMotorLoop(); //Microstep Stepper Driver
 extern void stmA3967GoStepsForward(u32 nStep);
 extern void stmA3967GoStepsBackward(u32 nStep);
 extern void stmA3967Conf();
 
-extern stmAMIS30621_TMC211_LinLoop(void);			//LIN-based Stepper Driver Controller
-extern void stmX27_Vid29_Init(unsigned int maxSteps);	//Guage stepper
+extern stmAMIS30621_TMC211_LinLoop(void); //LIN-based Stepper Driver Controller
+extern void stmX27_Vid29_Init(unsigned int maxSteps); //Guage stepper
 extern void stmX27_Vid29_MoveTheNeedleAt(unsigned int pos);
 extern void stmX27_Vid29_Loop(void);
 
@@ -218,8 +218,8 @@ extern int stmLinLoop(void);
 //extern void stmRTL9K_TestLoop();				//Automotive Ethernet PHY(Realtek RTL9000)
 
 //Ethernet
-extern void stmEnc28J60EtherSpiLoop(); 			//SPI-10Mbps
-extern int ETH_SimpleLoop(void); 				//with IP101 PHY
+extern void stmEnc28J60EtherSpiLoop(); //SPI-10Mbps
+extern int ETH_SimpleLoop(void); //with IP101 PHY
 //extern 	int dtMdioLoop(void);
 extern int stmMdioBitbangLoop(void);
 
@@ -232,21 +232,21 @@ extern int stmMdioBitbangLoop(void);
 
 //Display
 extern void stmWs2812LEDloop();
-extern 	void stmMax7219_ClockLoop();
+extern void stmMax7219_ClockLoop();
 //extern	void stmMax7219_4Digit_Loop(int nCS);
 extern void stmMax7219_DotMatrix_Loop();
 extern int lcd_config(void);
-extern void Display_String(uint16_t x, uint16_t y, char *ptr,uint16_t color); //LCD
+extern void Display_String(uint16_t x, uint16_t y, char* ptr, uint16_t color); //LCD
 extern void LCDlogo(void);
 extern void SSD1306_OLED_Loop();
 extern void stmHt16K33Loop();
-extern void stmPcf8574I2cLoop (void);
+extern void stmPcf8574I2cLoop(void);
 extern void sccb_OV7670_loop(void);
-extern void SSD1306_OLED_printString_8X8(const char *String, unsigned char X, unsigned char Y, unsigned char numChar);
-extern int lcdLoop (void);
+extern void SSD1306_OLED_printString_8X8(const char* String, unsigned char X, unsigned char Y, unsigned char numChar);
+extern int lcdLoop(void);
 
 //== Clock/Frequency Generators
-extern void stm_Si5328cLoop (void);
+extern void stm_Si5328cLoop(void);
 extern void DS3231rtc_loop();
 extern void cs2300Config();
 extern unsigned char stmAd9833_FreqGenLoop();
@@ -276,9 +276,9 @@ extern void stmCLCD_Samsung_Loop();
 extern int contiki_loop();
 
 //PTP
-extern int yEther_PTP_1588_8021AS_Loop(char *str);
+extern int yEther_PTP_1588_8021AS_Loop(char* str);
 extern void stm_ptp_mainloop();
-extern int ETH_PTP8021asLoop(char *str);
+extern int ETH_PTP8021asLoop(char* str);
 extern void SysTickIntHandler_PTP(void);
 
 extern void DRV8825Stepper_loop();
@@ -302,8 +302,8 @@ extern void stmMCP23S17_Loop();
 extern void stmMax7219_4Digit_Loop();
 extern void stmSpiSt7735HY18LcdLoop();
 extern void ST7735_initConfig();
-extern void ST7735_displayValue(unsigned char x0,unsigned char y0, unsigned char val);
-extern void  LCD_displayString(unsigned char x0,unsigned char y0,unsigned char *s);
+extern void ST7735_displayValue(unsigned char x0, unsigned char y0, unsigned char val);
+extern void LCD_displayString(unsigned char x0, unsigned char y0, unsigned char* s);
 
 extern void stmVL53L0X_ConfigAndInit();
 extern short stmVL53L0X_readRange();
@@ -317,34 +317,32 @@ extern void stmLIS3MDL_Loop();
 
 //Magnetometer (LIS3MDL and HMC5883L)
 extern char stmLIS3MDL_MAG_ConfIo_Init();
-extern char stmLIS3MDL_MAG_GetAxes(float *fData);
+extern char stmLIS3MDL_MAG_GetAxes(float* fData);
 extern void stmHMC5883L_MAG_Init();
-extern char stmHMC5883L_MAG_GetAxes(float *f_headingRad, float *f_headingDegrees);
+extern char stmHMC5883L_MAG_GetAxes(float* f_headingRad, float* f_headingDegrees);
 
 //GYRO - Angular Rate Sensors (L3GD20H and L3G4200)
 extern char stmL3GD20H_GYRO_ConfIo_Init(void);
-extern void stmL3GD20H_GYRO_ReadXYZAngRate(float *pfData);
+extern void stmL3GD20H_GYRO_ReadXYZAngRate(float* pfData);
 extern void stmL3G4200_GYRO_Init();
 extern void stmL3G4200_GRYO_Get_XYZ(short xyz[]);
 
 //ACCEL - Gravity Sensors (ADXL345)
 extern void stmADXL345_ACCEL_Init();
-extern void stmADXL345_ACCEL_ReadXYZ(short *acc);
+extern void stmADXL345_ACCEL_ReadXYZ(short* acc);
 
 //Barometer - BMP280, and BMP180...
-extern void  stmBmp280_BARO_Init();
+extern void stmBmp280_BARO_Init();
 extern float stmBmp280_BARO_readPressure(void);
 extern float stmBmp280_BARO_readAltitude();
 extern float stmBmp280_BARO_readTemperature(void);
 
 //6DOF
 void stmMPU6050_ACCEL_GYRO_Init();
-int  stmMPU6050_ACCEL_GYRO_read(int startReg, unsigned char *buffer, int size); //acc(xyz)+temp+gyro(xyz)
-
+int stmMPU6050_ACCEL_GYRO_read(int startReg, unsigned char* buffer, int size); //acc(xyz)+temp+gyro(xyz)
 
 //Motor
 void stmMcp8063BldcLoop(void);
-
 
 //avioincs
 extern void markerBeacon_loop(void);
@@ -373,47 +371,47 @@ extern void stmCan_Config(unsigned int bitRate);
 void stmSET_PB3_4_GPIO()
 {
 #if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT))
-	//[VERY IMPORTANT] PB3's default function is JTDO and PB4's default function is JNTRST.
-	//Thus we should remap it to general GPIO pin as the follows if needed.
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
+    //[VERY IMPORTANT] PB3's default function is JTDO and PB4's default function is JNTRST.
+    //Thus we should remap it to general GPIO pin as the follows if needed.
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //PB3/PB4 Remap to GPIO
     //(b)Configure PB3 and PB4 as outputs for GPIO
     GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
-	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;// | GPIO_Mode_AF_PP;
-	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStruct);
-	GPIO_SetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP; // | GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
+    GPIO_SetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
 #endif
 }
 
 void stmRESET_PB3_4_GPIO()
 {
 #if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT))
-	//[VERY IMPORTANT] PB3's default function is JTDO and PB4's default function is JNTRST.
-	//Thus we should remap it to general GPIO pin as the follows if needed.
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
+    //[VERY IMPORTANT] PB3's default function is JTDO and PB4's default function is JNTRST.
+    //Thus we should remap it to general GPIO pin as the follows if needed.
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //PB3/PB4 Remap to GPIO
-	//(b)Configure PB3 and PB4 as outputs for GPIO
+        //(b)Configure PB3 and PB4 as outputs for GPIO
     GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
-	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;// | GPIO_Mode_AF_PP;
-	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStruct);
-	GPIO_ResetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP; // | GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
+    GPIO_ResetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
 #endif
 }
-
 
 //======== UTILS ============
 
 //for using usart for debugging, set proper DEBUG_UART_INDEX in yInc.h
-void yAssert(unsigned char x, char *str){
-	if(!x){ //if false
-		//do{
-			printf("----ASSERT(%s)\r\n",str);
-		//}while(1);
-	}
+void yAssert(unsigned char x, char* str)
+{
+    if (!x) { //if false
+        //do{
+        printf("----ASSERT(%s)\r\n", str);
+        //}while(1);
+    }
 }
 
 /* Initialize SysTick to 1 ms.*/
@@ -423,52 +421,51 @@ void yAssert(unsigned char x, char *str){
  *SystemFrequency/1000000   1us         *
  *****************************************/
 
+void Init_SysTick(int resolutionInUsec)
+{
+    RCC_ClocksTypeDef RCC_Clocks;
 
-void Init_SysTick(int resolutionInUsec){
-  RCC_ClocksTypeDef RCC_Clocks;
+    g_tickCnt = 0;
 
-  g_tickCnt = 0;
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
+    RCC_GetClocksFreq(&RCC_Clocks);
+    if (resolutionInUsec == 1)
+        SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000000); //1usec
+    else if (resolutionInUsec == 10)
+        SysTick_Config(RCC_Clocks.HCLK_Frequency / 100000); //10usec
+    else if (resolutionInUsec == 100)
+        SysTick_Config(RCC_Clocks.HCLK_Frequency / 10000); //100usec
+    else if (resolutionInUsec == 1000)
+        SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000); //1msec
+    else if (resolutionInUsec == 10000) //default
+        SysTick_Config(RCC_Clocks.HCLK_Frequency / 100); //10msec
 
-  SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
-  RCC_GetClocksFreq(&RCC_Clocks);
-  if(resolutionInUsec == 1)
-	  SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000000);//1usec
-  else if(resolutionInUsec == 10)
-	  SysTick_Config(RCC_Clocks.HCLK_Frequency / 100000);//10usec
-  else if(resolutionInUsec == 100)
-	  SysTick_Config(RCC_Clocks.HCLK_Frequency / 10000);//100usec
-  else if(resolutionInUsec == 1000)
-	  SysTick_Config(RCC_Clocks.HCLK_Frequency / 1000);//1msec
-  else if(resolutionInUsec == 10000) //default
-	  SysTick_Config(RCC_Clocks.HCLK_Frequency / 100);//10msec
+    NVIC_SetPriority(SysTick_IRQn, 0);
 
+    delayms(10);
 
-  NVIC_SetPriority(SysTick_IRQn,0);
-
-  delayms(10);
-
-  	    /***************************************************************************
+    /***************************************************************************
   	    NOTE:
   	         When using Systick to manage the delay in Ethernet driver, the Systick
   	         must be configured before Ethernet initialization and, the interrupt
   	         priority should be the highest one.
   	  *****************************************************************************/
-  	  /* Set Systick interrupt priority to 0*/
-  //	  NVIC_SetPriority (SysTick_IRQn, 0);
-
+    /* Set Systick interrupt priority to 0*/
+    //	  NVIC_SetPriority (SysTick_IRQn, 0);
 }
 
-void SysTick_Handler(void){
-	//lwip_Time_Update();//  Update the LocalTime by adding SYSTICKMS each SysTick interrupt
-	//  Time_Update();
-	//SysTickIntHandler_TEST();
-	g_tickCnt++;
+void SysTick_Handler(void)
+{
+    //lwip_Time_Update();//  Update the LocalTime by adding SYSTICKMS each SysTick interrupt
+    //  Time_Update();
+    //SysTickIntHandler_TEST();
+    g_tickCnt++;
 
-	if((g_tickCnt % 100) == 0){ //if((g_tickCnt % 1000) == 0){
-		g_tickEvent = 1;
-	}
+    if ((g_tickCnt % 100) == 0) { //if((g_tickCnt % 1000) == 0){
+        g_tickEvent = 1;
+    }
 #if (PROJ_FOR == PROJ_FOR_PTP) || (PROJ_FOR == PROJ_FOR_RSTP_PTP)
-	SysTickIntHandler_PTP();
+    SysTickIntHandler_PTP();
 #endif
 }
 
@@ -515,8 +512,6 @@ void SysTick_Handler(void){
 	SysTickIntHandler_PTP();
 }
 */
-
-
 
 /* == For automotive electronics engineering Class =====================
 void AutomotiveSensorActuatorProj(){
@@ -632,46 +627,42 @@ void AutomotiveSensorActuatorProj(){
 }
 */
 
-
-
-
 //=========== Mandatory the very first configuration for STM32F103 ==========
-void dtInstall_DebugConsole(){
-	// For using printf(), we activate UART1 of MCU with 115200bps ==================================
-	// Also you should install TeraTerm Terminal Emulator on your PC/Notebook.
-	// Connect the PC(via USB/UART Dongle) to MCU's USART1 pins with 115200 baud rate.
-	// You also understand UART operation here.
+void dtInstall_DebugConsole()
+{
+    // For using printf(), we activate UART1 of MCU with 115200bps ==================================
+    // Also you should install TeraTerm Terminal Emulator on your PC/Notebook.
+    // Connect the PC(via USB/UART Dongle) to MCU's USART1 pins with 115200 baud rate.
+    // You also understand UART operation here.
 
-
-#if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6)|| (PROCESSOR == PROCESSOR_STM32F107VCT) || (PROCESSOR == PROCESSOR_GD32F130FX))
-	// Setup USART1 for Debugging Console Output.
-	if(DEBUG_UART_INDEX  == 1) //you can find this definition in yInc.h
-		stmUsart1_Init(115200); //KONG
-	else if(DEBUG_UART_INDEX  == 2)
-		stmUsart2_Init(115200);
-	else if(DEBUG_UART_INDEX  == 3)
-		stmUsart3_Init(115200);
-	delayms(100);
+#if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT) || (PROCESSOR == PROCESSOR_GD32F130FX))
+    // Setup USART1 for Debugging Console Output.
+    if (DEBUG_UART_INDEX == 1) //you can find this definition in yInc.h
+        stmUsart1_Init(115200); //KONG
+    else if (DEBUG_UART_INDEX == 2)
+        stmUsart2_Init(115200);
+    else if (DEBUG_UART_INDEX == 3)
+        stmUsart3_Init(115200);
+    delayms(100);
 #elif (PROCESSOR == PROCESSOR_STM32F407VGT6)
-	if(DEBUG_UART_INDEX  == 2)
-		stmUsart2_Init(115200); //KONG
-	else if(DEBUG_UART_INDEX  == 3)
-		stmUsart3_Init(115200);
+    if (DEBUG_UART_INDEX == 2)
+        stmUsart2_Init(115200); //KONG
+    else if (DEBUG_UART_INDEX == 3)
+        stmUsart3_Init(115200);
 
-	printf("STM32F407: SYSCLK_Frequency(PLL)=%d(Should be 168MHz), HCLK_Frequency(should be 168MHz)=%d, HSE_Freq=25MHz \r\n",RCC_ClockFreq.SYSCLK_Frequency,RCC_ClockFreq.HCLK_Frequency);
+    printf("STM32F407: SYSCLK_Frequency(PLL)=%d(Should be 168MHz), HCLK_Frequency(should be 168MHz)=%d, HSE_Freq=25MHz \r\n", RCC_ClockFreq.SYSCLK_Frequency, RCC_ClockFreq.HCLK_Frequency);
 #elif (PROCESSOR == PROCESSOR_STM32F407VZT6)
-	stmUsart3_Init(115200);
-	printf("SYSCLK_Frequency(PLL)=%d(Should be 168MHz), HCLK_Frequency(should be 168MHz)=%d, HSE_Freq=25MHz \r\n",RCC_ClockFreq.SYSCLK_Frequency,RCC_ClockFreq.HCLK_Frequency);
+    stmUsart3_Init(115200);
+    printf("SYSCLK_Frequency(PLL)=%d(Should be 168MHz), HCLK_Frequency(should be 168MHz)=%d, HSE_Freq=25MHz \r\n", RCC_ClockFreq.SYSCLK_Frequency, RCC_ClockFreq.HCLK_Frequency);
 #elif (PROCESSOR == PROCESSOR_STM32F401RET6)
-	//stmUsart6_Init(115200);//401-M34
-	stmUsart2_Init(115200);//401-M35
-	printf("STM32F401: SYSCLK_Frequency(PLL)=%d(Should be 84MHz), HCLK_Frequency(should be 84MHz)=%d, HSE_Freq=25MHz \r\n",RCC_ClockFreq.SYSCLK_Frequency,RCC_ClockFreq.HCLK_Frequency);
+    //stmUsart6_Init(115200);//401-M34
+    stmUsart2_Init(115200); //401-M35
+    printf("STM32F401: SYSCLK_Frequency(PLL)=%d(Should be 84MHz), HCLK_Frequency(should be 84MHz)=%d, HSE_Freq=25MHz \r\n", RCC_ClockFreq.SYSCLK_Frequency, RCC_ClockFreq.HCLK_Frequency);
 #endif
 
-	printf("============= HELLO KONG ================\r\n");
-	printf("======= for Practical DataComm ==============\r\n");
-	//printf("STM32F10X: SYSCLK_Frequency(PLL)=%d(Should be 72MHz), HCLK_Frequency(should be 72MHz)=%d, HSE_Freq=25MHz \r\n",RCC_ClockFreq.SYSCLK_Frequency,RCC_ClockFreq.HCLK_Frequency);
-
+    printf("============= HELLO KONG ================\r\n");
+    printf("======= for Practical DataComm ==============\r\n");
+    //printf("STM32F10X: SYSCLK_Frequency(PLL)=%d(Should be 72MHz), HCLK_Frequency(should be 72MHz)=%d, HSE_Freq=25MHz \r\n",RCC_ClockFreq.SYSCLK_Frequency,RCC_ClockFreq.HCLK_Frequency);
 }
 /*
  *  for arinc429 - 6.4MHz Crystal
@@ -705,313 +696,353 @@ void SystemClock_Config(void)
 
 }
  */
-void dtVeryFirstMcuConfigAndInstallDebugConsole(){
-	uint8_t ret;
-	//SystemInit and Set its clock source
-	RCC_ClocksTypeDef RCC_ClockFreq;
+void dtVeryFirstMcuConfigAndInstallDebugConsole()
+{
+    uint8_t ret;
+    //SystemInit and Set its clock source
+    RCC_ClocksTypeDef RCC_ClockFreq;
 
-	SystemInit();
-	//_init_ms();   //for delayms -- YOON
-	delayms(10);
+    SystemInit();
+    //_init_ms();   //for delayms -- YOON
+    delayms(10);
 #if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT) || (PROCESSOR == PROCESSOR_GD32F130FX))
 
 #else
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); // 4 bits for pre-emption priority. 0 bits for subpriority
-	//RCC_HSEConfig(RCC_HSE_ON); //add
-	//while(RCC_GetFlagStatus(RCC_FLAG_HSERDY)== RESET);//wait until HSE is ready.
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); // 4 bits for pre-emption priority. 0 bits for subpriority
+    //RCC_HSEConfig(RCC_HSE_ON); //add
+    //while(RCC_GetFlagStatus(RCC_FLAG_HSERDY)== RESET);//wait until HSE is ready.
 #endif
-	ret = RCC_GetSYSCLKSource();
-	// @retval The clock source used as system clock. The returned value can be one of the following:
-	//     - 0x00: HSI used as system clock
-	//     - 0x04: HSE used as system clock
-	//     - 0x08: PLL used as system clock
-	RCC_GetClocksFreq(&RCC_ClockFreq);
+    ret = RCC_GetSYSCLKSource();
+    // @retval The clock source used as system clock. The returned value can be one of the following:
+    //     - 0x00: HSI used as system clock
+    //     - 0x04: HSE used as system clock
+    //     - 0x08: PLL used as system clock
+    RCC_GetClocksFreq(&RCC_ClockFreq);
 
 #if (DEBUGG_CONSOLE == IS_USB)
-	stmUsbInit(); //in Device Mode for Terminal Emulator Function (TBD)
+    stmUsbInit(); //in Device Mode for Terminal Emulator Function (TBD)
 
 #elif (DEBUGG_CONSOLE == IS_USART)
-	dtInstall_DebugConsole();
+    dtInstall_DebugConsole();
 #endif
-	printf("STM32F103:SYSCLK=%d(be 72MHz)",RCC_ClockFreq.SYSCLK_Frequency);
-	printf("HCLK(be 72MHz)=%d,HSE_Freq=8MHz \r\n",RCC_ClockFreq.HCLK_Frequency);
+    printf("STM32F103:SYSCLK=%d(be 72MHz)", RCC_ClockFreq.SYSCLK_Frequency);
+    printf("HCLK(be 72MHz)=%d,HSE_Freq=8MHz \r\n", RCC_ClockFreq.HCLK_Frequency);
 }
-void dtVeryFirstMcuConfigOnly(){
-	uint8_t ret;
-	//SystemInit and Set its clock source
-	RCC_ClocksTypeDef RCC_ClockFreq;
+void dtVeryFirstMcuConfigOnly()
+{
+    uint8_t ret;
+    //SystemInit and Set its clock source
+    RCC_ClocksTypeDef RCC_ClockFreq;
 
-	SystemInit();
-	//_init_ms();   //for delayms -- YOON
-	delayms(10);
+    SystemInit();
+    //_init_ms();   //for delayms -- YOON
+    delayms(10);
 #if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT) || (PROCESSOR == PROCESSOR_GD32F130FX))
 
 #else
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); // 4 bits for pre-emption priority. 0 bits for subpriority
-	//RCC_HSEConfig(RCC_HSE_ON); //add
-	//while(RCC_GetFlagStatus(RCC_FLAG_HSERDY)== RESET);//wait until HSE is ready.
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4); // 4 bits for pre-emption priority. 0 bits for subpriority
+    //RCC_HSEConfig(RCC_HSE_ON); //add
+    //while(RCC_GetFlagStatus(RCC_FLAG_HSERDY)== RESET);//wait until HSE is ready.
 #endif
-	ret = RCC_GetSYSCLKSource();
-	// @retval The clock source used as system clock. The returned value can be one of the following:
-	//     - 0x00: HSI used as system clock
-	//     - 0x04: HSE used as system clock
-	//     - 0x08: PLL used as system clock
-	RCC_GetClocksFreq(&RCC_ClockFreq);
+    ret = RCC_GetSYSCLKSource();
+    // @retval The clock source used as system clock. The returned value can be one of the following:
+    //     - 0x00: HSI used as system clock
+    //     - 0x04: HSE used as system clock
+    //     - 0x08: PLL used as system clock
+    RCC_GetClocksFreq(&RCC_ClockFreq);
 }
 
 void stmUsingPB3_4_AsGPIO()
 {
 #if ((PROCESSOR == PROCESSOR_STM32F103C8T6) || (PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT))
-	//[VERY IMPORTANT] PB3's default function is JTDO and PB4's default function is JNTRST.
-	//Thus we should remap it to general GPIO pin as the follows if needed.
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
+    //[VERY IMPORTANT] PB3's default function is JTDO and PB4's default function is JNTRST.
+    //Thus we should remap it to general GPIO pin as the follows if needed.
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE); //PB3/PB4 Remap to GPIO
-#if 1 //TEST
-	//(b)Configure PB3 and PB4 as outputs for GPIO
+#if 1 //TEST \
+    //(b)Configure PB3 and PB4 as outputs for GPIO
     GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
-	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;// | GPIO_Mode_AF_PP;
-	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStruct);
-    while(1){
-    	{GPIO_SetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);}
-    	delayms(5000);
-    	{GPIO_ResetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);}
-    	delayms(5000);
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP; // | GPIO_Mode_AF_PP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStruct);
+    while (1) {
+        {
+            GPIO_SetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
+        }
+        delayms(5000);
+        {
+            GPIO_ResetBits(GPIOB, GPIO_Pin_3 | GPIO_Pin_4);
+        }
+        delayms(5000);
     }
 
 #endif
 #endif
 }
 
-extern void RTC_DS3231_now(struct _DateTime *dt) ;
+extern void RTC_DS3231_now(struct _DateTime* dt);
 extern stmGpsConfig(unsigned char uartId);
-extern char stmGpsGetTimeOfDay(unsigned char uartId, struct minmea_sentence_rmc *rmc);
-extern char *getStr_DaysOfTheWeek(struct _DateTime *dt);
-extern unsigned int DateTime_unixtime(struct _DateTime *dt);
-extern char stmGpsGetTimeOfDayAndDisplay(unsigned char uartId, struct minmea_sentence_rmc *rmc);
-extern void RTC_DS3231_Adjust(struct _DateTime *dt); //set time
+extern char stmGpsGetTimeOfDay(unsigned char uartId, struct minmea_sentence_rmc* rmc);
+extern char* getStr_DaysOfTheWeek(struct _DateTime* dt);
+extern unsigned int DateTime_unixtime(struct _DateTime* dt);
+extern char stmGpsGetTimeOfDayAndDisplay(unsigned char uartId, struct minmea_sentence_rmc* rmc);
+extern void RTC_DS3231_Adjust(struct _DateTime* dt); //set time
 extern unsigned char stm_RF24_6StarConfig(void); //return role (ping = 0; pong = 1)
-extern char stm_RF24_6Star_Ping(char *txstr, char *rxstr, unsigned char *nbUnixTime);
-extern void stm_RF24_6Star_Pong(char *curTimeStr, unsigned char *nbUnixTime);
+extern char stm_RF24_6Star_Ping(char* txstr, char* rxstr, unsigned char* nbUnixTime);
+extern void stm_RF24_6Star_Pong(char* curTimeStr, unsigned char* nbUnixTime);
 struct _ppsHoldOver g_ppsHoldOver;
-
-
-
-
 
 //retVal = 0x41 == ST
 //retVal = 0x7a3 == GD
-unsigned short yGetJtagId(){
-	if(*(unsigned char *)(0xE00FFFE8)& 0x08){
-		return
-				((*(unsigned char *)(0xe00fffd0) & 0x0f)<<8) |
-				((*(unsigned char *)(0xe00fffe4) & 0xff)>>3) |
-				((*(unsigned char *)(0xe00fffe8) & 0x07)<<5) + 1;
-	}else
-		return 0;
+unsigned short yGetJtagId()
+{
+    if (*(unsigned char*)(0xE00FFFE8) & 0x08) {
+        return ((*(unsigned char*)(0xe00fffd0) & 0x0f) << 8) | ((*(unsigned char*)(0xe00fffe4) & 0xff) >> 3) | ((*(unsigned char*)(0xe00fffe8) & 0x07) << 5) + 1;
+    } else
+        return 0;
 }
-
 
 //PROJ
 void proj_gpws()
 {
-	char str[10];
-	short range;
+    char str[10];
+    short range;
 
-	stmBeep_setup();
-	stmVL53L0X_ConfigAndInit();
+    stmBeep_setup();
+    stmVL53L0X_ConfigAndInit();
 #if (PROCESSOR == PROCESSOR_STM32F103RCT6)
-	ST7735_initConfig();
-	LCD_displayString(1,144,"GPWS");
-	LCD_displayString(1,152,"Proximity : ");
+    ST7735_initConfig();
+    LCD_displayString(1, 144, "GPWS");
+    LCD_displayString(1, 152, "Proximity : ");
 #endif
-	while(1){
-		range = stmVL53L0X_readRange();
-		if(range > 0){
-			sprintf(str,"%03u mm",range);
+    while (1) {
+        range = stmVL53L0X_readRange();
+        if (range > 0) {
+            sprintf(str, "%03u mm", range);
 #if (PROCESSOR == PROCESSOR_STM32F103RCT6)
-			LCD_displayString(80,152,str);//ST7735_displayValue(80, 152, range);
+            LCD_displayString(80, 152, str); //ST7735_displayValue(80, 152, range);
 #endif
-			if(range < 200){
-				if(range > 120){
-					stmBeep(70);
-					delayms(500);
-				}
-				else if(range > 80){
-						stmBeep(70);
-						delayms(200);
-				}else{
-					stmBeep(70);
-					delayms(100);
-				}
-			}
-		}
-		delayms(100);
-	}
-}
-
-void proj_primary_radar(){
-
-}
-
-void proj_pfd(){
-
+            if (range < 200) {
+                if (range > 120) {
+                    stmBeep(70);
+                    delayms(500);
+                } else if (range > 80) {
+                    stmBeep(70);
+                    delayms(200);
+                } else {
+                    stmBeep(70);
+                    delayms(100);
+                }
+            }
+        }
+        delayms(100);
+    }
 }
 
 extern void tca8418_setup(void);
-extern char tca8418_readKeypad(unsigned char *key, unsigned char *row, unsigned char *col);
+extern char tca8418_readKeypad(unsigned char* key, unsigned char* row, unsigned char* col);
 #if 1
-char tca8418_mcdu_input_parser(unsigned char row, unsigned char col){
-	char c = 0;
-	switch(col){
-	case 3:
-		if(row == 0){ c = 'i';
-			LCD_displayString(40,40,"INIT..");
-			delayms(500);
-			//ST7735_displayBitmap();
-		}
-		else if(row == 1){ c = 'r';	LCD_displayString(40,40,"ROUTE");}
-		else if(row == 2){ c = 'c';	LCD_displayString(40,40,"CLIMB");}
-		else if(row == 3){ c = 'c';	LCD_displayString(40,40,"CRUISE");}
-		else if(row == 4){ c = 'd';	LCD_displayString(40,40,"DESCENT");}
-		break;
+char tca8418_mcdu_input_parser(unsigned char row, unsigned char col)
+{
+    char c = 0;
+    switch (col) {
+    case 3:
+        if (row == 0) {
+            c = 'i';
+            LCD_displayString(40, 40, "INIT..");
+            delayms(500);
+            //ST7735_displayBitmap();
+        } else if (row == 1) {
+            c = 'r';
+            LCD_displayString(40, 40, "ROUTE");
+        } else if (row == 2) {
+            c = 'c';
+            LCD_displayString(40, 40, "CLIMB");
+        } else if (row == 3) {
+            c = 'c';
+            LCD_displayString(40, 40, "CRUISE");
+        } else if (row == 4) {
+            c = 'd';
+            LCD_displayString(40, 40, "DESCENT");
+        }
+        break;
 
-	case 4:
-		//if(row == 0){ c = 'm';	LCD_displayString(40,40,"MENU");}
-		//else if(row == 1){ c = 'e';	LCD_displayString(40,40,"EMERGENCY");}
-		if(row == 5){ c = 'e';	LCD_displayString(40,80,"EXECUTE");}
-		break;
-	case 5:
-		if(row == 3) c = 'A';
-		else if(row == 4) c = 'B';
-		else if(row == 5) c = 'C';
-		else if(row == 6) c = 'D';
-		else if(row == 7) c = 'E';
-		break;
-	case 6:
-		if(row == 3) c = 'F';
-		else if(row == 4) c = 'G';
-		else if(row == 5) c = 'H';
-		else if(row == 6) c = 'I';
-		else if(row == 7) c = 'J';
-		break;
-	case 7:
-		if(row == 0) c = '1';
-		else if(row == 1) c = '2';
-		else if(row == 2) c = '3';
-		else if(row == 3) c = 'K';
-		else if(row == 4) c = 'L';
-		else if(row == 5) c = 'M';
-		else if(row == 6) c = 'N';
-		else if(row == 7) c = 'O';
-		break;
-	case 8:
-		if(row == 0) c = '4';
-		else if(row == 1) c = '5';
-		else if(row == 2) c = '6';
-		else if(row == 3) c = 'P';
-		else if(row == 4) c = 'Q';
-		else if(row == 5) c = 'R';
-		else if(row == 6) c = 'S';
-		else if(row == 7) c = 'T';
-		break;
-	case 9:
-		if(row == 0) c = '7';
-		else if(row == 1) c = '8';
-		else if(row == 2) c = '9';
-		else if(row == 3) c = 'U';
-		else if(row == 4) c = 'V';
-		else if(row == 5) c = 'W';
-		else if(row == 6) c = 'X';
-		else if(row == 7) c = 'Y';
-		break;
-	case 0:
-		if(row == 1) c = '*';
-		else if(row == 2) c = '0';
-		else if(row == 3) c = '+';
-		else if(row == 4) c = 'Z';
-		else if(row == 5) c = 0x00; //SP -- TBD
-		else if(row == 6) c = 0x07; //DEL-- TBD
-		else if(row == 7) c = '/';
-		else if(row == 8) c = 0x08; //CLR-- TBD
-		break;
-	}
-	return c;
-
-
+    case 4:
+        //if(row == 0){ c = 'm';	LCD_displayString(40,40,"MENU");}
+        //else if(row == 1){ c = 'e';	LCD_displayString(40,40,"EMERGENCY");}
+        if (row == 5) {
+            c = 'e';
+            LCD_displayString(40, 80, "EXECUTE");
+        }
+        break;
+    case 5:
+        if (row == 3)
+            c = 'A';
+        else if (row == 4)
+            c = 'B';
+        else if (row == 5)
+            c = 'C';
+        else if (row == 6)
+            c = 'D';
+        else if (row == 7)
+            c = 'E';
+        break;
+    case 6:
+        if (row == 3)
+            c = 'F';
+        else if (row == 4)
+            c = 'G';
+        else if (row == 5)
+            c = 'H';
+        else if (row == 6)
+            c = 'I';
+        else if (row == 7)
+            c = 'J';
+        break;
+    case 7:
+        if (row == 0)
+            c = '1';
+        else if (row == 1)
+            c = '2';
+        else if (row == 2)
+            c = '3';
+        else if (row == 3)
+            c = 'K';
+        else if (row == 4)
+            c = 'L';
+        else if (row == 5)
+            c = 'M';
+        else if (row == 6)
+            c = 'N';
+        else if (row == 7)
+            c = 'O';
+        break;
+    case 8:
+        if (row == 0)
+            c = '4';
+        else if (row == 1)
+            c = '5';
+        else if (row == 2)
+            c = '6';
+        else if (row == 3)
+            c = 'P';
+        else if (row == 4)
+            c = 'Q';
+        else if (row == 5)
+            c = 'R';
+        else if (row == 6)
+            c = 'S';
+        else if (row == 7)
+            c = 'T';
+        break;
+    case 9:
+        if (row == 0)
+            c = '7';
+        else if (row == 1)
+            c = '8';
+        else if (row == 2)
+            c = '9';
+        else if (row == 3)
+            c = 'U';
+        else if (row == 4)
+            c = 'V';
+        else if (row == 5)
+            c = 'W';
+        else if (row == 6)
+            c = 'X';
+        else if (row == 7)
+            c = 'Y';
+        break;
+    case 0:
+        if (row == 1)
+            c = '*';
+        else if (row == 2)
+            c = '0';
+        else if (row == 3)
+            c = '+';
+        else if (row == 4)
+            c = 'Z';
+        else if (row == 5)
+            c = 0x00; //SP -- TBD
+        else if (row == 6)
+            c = 0x07; //DEL-- TBD
+        else if (row == 7)
+            c = '/';
+        else if (row == 8)
+            c = 0x08; //CLR-- TBD
+        break;
+    }
+    return c;
 }
-void proj_mcdu_with_Keypad_LCD(){
-	char str[10];
-	short range;
+void proj_mcdu_with_Keypad_LCD()
+{
+    char str[10];
+    short range;
 
-	unsigned char key, row, col;
-	char none_up_down, ch;
+    unsigned char key, row, col;
+    char none_up_down, ch;
 
-	//I2c config
-	if(!g_bI2CModuleConfigDone)
-	{
+    //I2c config
+    if (!g_bI2CModuleConfigDone) {
 #if (PROCESSOR == PROCESSOR_STM32F407VZT6)
-		  gI2Cx = I2C2;
+        gI2Cx = I2C2;
 #else
-		  gI2Cx = I2C1;
+        gI2Cx = I2C1;
 #endif
-		printf("I2C Init...");
-		stm_I2C_Init(gI2Cx,400000);//400Kbps
-		g_bI2CModuleConfigDone = 1;
-		printf("Done.\r\n");
-	}
+        printf("I2C Init...");
+        stm_I2C_Init(gI2Cx, 400000); //400Kbps
+        g_bI2CModuleConfigDone = 1;
+        printf("Done.\r\n");
+    }
 
+    stmBeep_setup(); //PC12 if RCT6
 
-	stmBeep_setup(); //PC12 if RCT6
+    stmBeep(100);
 
-	stmBeep(100);
-
-
-	//stmVL53L0X_ConfigAndInit();
+    //stmVL53L0X_ConfigAndInit();
 #if (PROCESSOR == PROCESSOR_STM32F103RCT6)
 #if 1
-	LCD_spi_GpioSetup();
-	ST7735_initSeq(0);
+    LCD_spi_GpioSetup();
+    ST7735_initSeq(0);
 
-	ST7735_ShowDemo();
+    ST7735_ShowDemo();
 
-	LCD_displayString(8,0,"MCDU");//LCD_displayString(1,144,"MCDU");
+    LCD_displayString(8, 0, "MCDU"); //LCD_displayString(1,144,"MCDU");
 #else
-	IL9163_initConfig();
-	IL9163_displayString(8,120,"MCDU");//LCD_displayString(1,144,"MCDU");
+    IL9163_initConfig();
+    IL9163_displayString(8, 120, "MCDU"); //LCD_displayString(1,144,"MCDU");
 
 #endif
-	LCD_displayString(1,110,"Proximity : ");
+    LCD_displayString(1, 110, "Proximity : ");
 
-	tca8418_setup();
+    tca8418_setup();
 
 #endif
-	while(1){
+    while (1) {
 
-		none_up_down = tca8418_readKeypad(&key, &row, &col); 				//Get first keycode from FIFO
-		if(none_up_down == 1){
-			ch = tca8418_mcdu_input_parser(row, col); //We may use key... keycode...
-			printf("%02u=(%u:%u)(row,col) Key Pressed (%c)\r\n",key, row, col, ch );
+        none_up_down = tca8418_readKeypad(&key, &row, &col); //Get first keycode from FIFO
+        if (none_up_down == 1) {
+            ch = tca8418_mcdu_input_parser(row, col); //We may use key... keycode...
+            printf("%02u=(%u:%u)(row,col) Key Pressed (%c)\r\n", key, row, col, ch);
 
-			sprintf(str,"(%u:%u)=%c", row, col, ch );
+            sprintf(str, "(%u:%u)=%c", row, col, ch);
 #if (PROCESSOR == PROCESSOR_STM32F103RCT6)
-			if(isdigit(ch)){
-				LCD_displayString(40,60,str);
-			}else
-				LCD_displayString(108,120,str);
-			//LCD_displayString(80,152,str);//ST7735_displayValue(80, 152, range);
-			stmBeep(50);
+            if (isdigit(ch)) {
+                LCD_displayString(40, 60, str);
+            } else
+                LCD_displayString(108, 120, str);
+            //LCD_displayString(80,152,str);//ST7735_displayValue(80, 152, range);
+            stmBeep(50);
 #endif
-			stmBeep(50);
-		}else if(none_up_down == 0){
-			printf("%02u=(%u:%u)(row,col) Key UnPressed\r\n",key, row, col );
-		}
-		else{ //Not happend
-			//printf("Nothing\r\n");
-		}
+            stmBeep(50);
+        } else if (none_up_down == 0) {
+            printf("%02u=(%u:%u)(row,col) Key UnPressed\r\n", key, row, col);
+        } else { //Not happend
+            //printf("Nothing\r\n");
+        }
 
-/*
+        /*
 		range = 230;//stmVL53L0X_readRange();
 		if(range > 0){
 			sprintf(str,"%03u mm",range);
@@ -1034,15 +1065,10 @@ void proj_mcdu_with_Keypad_LCD(){
 		}
 		delayms(100);
 */
-	}
+    }
 }
 #endif
-void proj_adc(){
 
-}
-void proj_arinc429(){
-
-}
 extern void dtmf_loop(void);
 extern void stmSn76489Loop(void);
 extern void stmMCP4725_Loop();
@@ -1051,7 +1077,7 @@ extern void stmHd44780_Pcf8574_Clcd_Loop();
 extern void pidLoop(void);
 extern void ISL1208rtc_loop();
 extern void A4988_loop();
-extern void SSD1306_OLED_init(char *str);
+extern void SSD1306_OLED_init(char* str);
 extern void stmXPT2046Touch_Loop();
 extern void stmSpiGC9A01RoundLcdLoop();
 extern void stm_RF24_6Star_loop(void);
@@ -1059,158 +1085,144 @@ extern void stm_RF24_6Star_loop(void);
 //========================================== THE MAIN =====================================
 int main(void)
 {
-	int i = 0;
-	uint8_t ret;
-	int x;
-	char str[12];
-	unsigned short rdval;
+    int i = 0;
+    uint8_t ret;
+    int x;
+    char str[12];
+    unsigned short rdval;
 
-	//Configure the basic MCU settings, and install UART port for debugging.
-	dtVeryFirstMcuConfigAndInstallDebugConsole();
-	//dtVeryFirstMcuConfigOnly();
+    //Configure the basic MCU settings, and install UART port for debugging.
+    dtVeryFirstMcuConfigAndInstallDebugConsole();
+    //dtVeryFirstMcuConfigOnly();
 
-	rdval = yGetJtagId();
-	//retVal = 0x41 == ST
-	//retVal = 0x7a3 == GD
-	if(rdval == 0x7a3){
-		printf("MCU is GD32F103C8T6\r\n");
-	}else
-		printf("MCU is STM(41) %x\r\n", rdval);
+    rdval = yGetJtagId();
+    //retVal = 0x41 == ST
+    //retVal = 0x7a3 == GD
+    if (rdval == 0x7a3) {
+        printf("MCU is GD32F103C8T6\r\n");
+    } else
+        printf("MCU is STM(41) %x\r\n", rdval);
 
+    //install systick.
+    Init_SysTick(RESOLUTION_IN_USEC); // 100 = 100usec; //1000= 1msec Tick; //10000= 10msec Tick Init_SysTick(10000);// 10msec Tick
 
-	  //install systick.
-	 Init_SysTick(RESOLUTION_IN_USEC);// 100 = 100usec; //1000= 1msec Tick; //10000= 10msec Tick Init_SysTick(10000);// 10msec Tick
+    //============= Preliminary experiment ================================
 
+    //	stmUsingPB3_4_AsGPIO();
 
-	//============= Preliminary experiment ================================
+    // stmBlinkyVeryFirstLoop();
 
-//	stmUsingPB3_4_AsGPIO();
-
-	// stmBlinkyVeryFirstLoop();
-
-	//I2C Config.
-	if(!g_bI2CModuleConfigDone){
+    //I2C Config.
+    if (!g_bI2CModuleConfigDone) {
 #if (PROCESSOR == PROCESSOR_STM32F407VZT6)
-		  gI2Cx = I2C2;
+        gI2Cx = I2C2;
 #else
-		  gI2Cx = I2C1;
+        gI2Cx = I2C1;
 #endif
-	}
+    }
 
-	  printf("I2Cx Init with 400Kbps...");
-	  stm_I2C_Init(gI2Cx,	400000);//I2C_SPEED);//100Kbps
-	  g_bI2CModuleConfigDone = 1;
+    printf("I2Cx Init with 400Kbps...");
+    stm_I2C_Init(gI2Cx, 400000); //I2C_SPEED);//100Kbps
+    g_bI2CModuleConfigDone = 1;
 
-	  //SSD1306_OLED_init("HELLO KONG");
-	  // stmTjaNxpMC_Loop();
-	  //stmTea5767FmLoop();
+    //SSD1306_OLED_init("HELLO KONG");
+    // stmTjaNxpMC_Loop();
+    //stmTea5767FmLoop();
 
+    // original function
+    //	  MOT_ServoLoop();
+    //	  stmUsingPB3_4_AsGPIO();
+    //	  stmAp3216Loop();
+    //	  stmADXL345Loop();
+    //	  stmCanLoop();
+    //	  stmLinLoop();
 
-	  // original function
-//	  MOT_ServoLoop();
-//	  stmUsingPB3_4_AsGPIO();
-//	  stmAp3216Loop();
-//	  stmADXL345Loop();
-//	  stmCanLoop();
-//	  stmLinLoop();
-
-	  // kmkim
-#if defined(SENSOR_MODE)	// sensor mode
-		stmCan_Config(100000);
-		stmAp3216_Init(1, 1);
-		stmADXL345_ACCEL_Init();
-	  while(1) {
-		  int lux = AP3216get();
-		  char led = (lux < LUX_THRESHOLD) ? 1 : 0;
-		  int pitch = ADXL345get();
-		  char servo = (pitch < PITCH_THRESHOLD_1 || pitch > PITCH_THRESHOLD_2) ? 0 : 1;
-		  CAN_SEND_CMD(led, servo);
-		  delayms(500);
-	  }
-#elif defined(ACTUATOR_MODE) 	// actuator mode
-	  stmCan_Config(100000);
-	  Servo_Setup();
-	  while(1) {
-		  int ret = CAN_RECEIVE_CMD();
-		  if(ret & 0x0001)
-			  Servo_control(45);
-		  else
-			  Servo_control(0);
-		  if((ret >> 1) & 0x0001)
-			  stmSET_PB3_4_GPIO();
-		  else
-			  stmRESET_PB3_4_GPIO();
-	  }
+    // kmkim
+#if defined(SENSOR_MODE) // sensor mode
+    stmCan_Config(100000);
+    stmAp3216_Init(1, 1);
+    stmADXL345_ACCEL_Init();
+    while (1) {
+        int lux = AP3216get();
+        char led = (lux < LUX_THRESHOLD) ? 1 : 0;
+        int pitch = ADXL345get();
+        char servo = (pitch < PITCH_THRESHOLD_1 || pitch > PITCH_THRESHOLD_2) ? 0 : 1;
+        CAN_SEND_CMD(led, servo);
+        delayms(500);
+    }
+#elif defined(ACTUATOR_MODE) // actuator mode
+    stmCan_Config(100000);
+    Servo_Setup();
+    while (1) {
+        int ret = CAN_RECEIVE_CMD();
+        if (ret & 0x0001)
+            Servo_control(45);
+        else
+            Servo_control(0);
+        if ((ret >> 1) & 0x0001)
+            stmSET_PB3_4_GPIO();
+        else
+            stmRESET_PB3_4_GPIO();
+    }
 #else
-	  stmAp3216_Init(1, 1);
-	  stmADXL345_ACCEL_Init();
-	  Servo_Setup();
-	  while(1) {
-		  int lux = AP3216get();
-		  if(lux < LUX_THRESHOLD){
-			  printf("lux: %d -> dark -> LED ON\r\n", lux);
-			  stmSET_PB3_4_GPIO();
-		  }
-		  else{
-			  printf("lux: %d -> bright -> LED OFF\r\n", lux);
-			  stmRESET_PB3_4_GPIO();
-		  }
-		  int pitch = ADXL345get();
-		  if(pitch < PITCH_THRESHOLD_1 || pitch > PITCH_THRESHOLD_2){
-			  printf("pitch: %d, unnormal road -> Angle 0\r\n", pitch);
-			  Servo_control(0);
-		  }
-		  else{
-			  printf("pitch: %d, normal road -> Angle 45\r\n", pitch);
-			  Servo_control(45);
-		  }
-		  delayms(1000);
-	}
+    stmAp3216_Init(1, 1);
+    stmADXL345_ACCEL_Init();
+    Servo_Setup();
+    while (1) {
+        int lux = AP3216get();
+        if (lux < LUX_THRESHOLD) {
+            printf("lux: %d -> dark -> LED ON\r\n", lux);
+            stmSET_PB3_4_GPIO();
+        } else {
+            printf("lux: %d -> bright -> LED OFF\r\n", lux);
+            stmRESET_PB3_4_GPIO();
+        }
+        int pitch = ADXL345get();
+        if (pitch < PITCH_THRESHOLD_1 || pitch > PITCH_THRESHOLD_2) {
+            printf("pitch: %d, unnormal road -> Angle 0\r\n", pitch);
+            Servo_control(0);
+        } else {
+            printf("pitch: %d, normal road -> Angle 45\r\n", pitch);
+            Servo_control(45);
+        }
+        delayms(1000);
+    }
 #endif
-
-
 
 #if (USE_DISPLAY == USE_DISPLAY_OLED)
-	//(5-2) OLED Display with I2C
-	 // SSD1306_OLED_init("HELLO KONG");
-	 //SSD1306_OLED_Loop();
-	  //stmTea5767FmLoop();
-	  //stmQeiLoop();
+    //(5-2) OLED Display with I2C
+    // SSD1306_OLED_init("HELLO KONG");
+    //SSD1306_OLED_Loop();
+    //stmTea5767FmLoop();
+    //stmQeiLoop();
 
 #endif
 
-	  //stmMPU6050Loop();//OK
-	  //stmSpiSt7735HY18LcdLoop();
-		//tca8418_loop();
-		//proj_mcdu_with_Keypad_LCD();
-	  //stmIL9163_8Bit_LcdLoop();
-	  //stmSpiST7789_240X240_LcdLoop();
-	  //stmSpiST7789_240X240_Clock_LcdLoop();
-	  //stmSpiST7789_240X240_Gauge_LcdLoop();
-	  //stmSpiGC9A01RoundLcdLoop();
-	  //stmMax7219_ClockLoop(); //--OK
-		//stmLm75TempSensorI2cLoop();
+    //stmMPU6050Loop();//OK
+    //stmSpiSt7735HY18LcdLoop();
+    //tca8418_loop();
+    //proj_mcdu_with_Keypad_LCD();
+    //stmIL9163_8Bit_LcdLoop();
+    //stmSpiST7789_240X240_LcdLoop();
+    //stmSpiST7789_240X240_Clock_LcdLoop();
+    //stmSpiST7789_240X240_Gauge_LcdLoop();
+    //stmSpiGC9A01RoundLcdLoop();
+    //stmMax7219_ClockLoop(); //--OK
+    //stmLm75TempSensorI2cLoop();
 
+    //stmXPT2046Touch_Loop();
 
-	  //stmXPT2046Touch_Loop();
+    //stmMax7219_4Digit_Loop() ;
+    //stmMax7219_ClockLoop(); //--OK
 
-		//stmMax7219_4Digit_Loop() ;
-		//stmMax7219_ClockLoop(); //--OK
+    //(0)
+    //stmBlinkyAndPrintfLoop();
 
-		//(0)
-		//stmBlinkyAndPrintfLoop();
+    //pidLoop();
 
-	  //pidLoop();
+    // stmMCP23S17_Loop();
 
-
-
-
-
-
-
-	 // stmMCP23S17_Loop();
-
-/*
+    /*
 
 	GPIO_InitTypeDef GPIO_InitStruct;
 	//PB4 - KONG-STM32F103C8T6 -- NEED PinRemap : GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
@@ -1230,59 +1242,49 @@ int main(void)
 	}
 */
 
+    //audio
+    //dtmf_loop();
+    //KT0803L_FMstation_loop();
+    //stmMCP4706_Loop() ; //OK
+    //stmMCP4725_Loop() ;
+    // stmAd9833_FreqGenLoop();//OK
+    //stmSn76489Loop(); //OK
 
-	//audio
-	//dtmf_loop();
-	//KT0803L_FMstation_loop();
-	  //stmMCP4706_Loop() ; //OK
-	  //stmMCP4725_Loop() ;
-	 // stmAd9833_FreqGenLoop();//OK
-	 //stmSn76489Loop(); //OK
-
-	  //stmFXL_Loop(); //OK
+    //stmFXL_Loop(); //OK
 #if ((PROCESSOR == PROCESSOR_STM32F103RCT6) || (PROCESSOR == PROCESSOR_STM32F107VCT))
-	// stmDacLoop();
+    // stmDacLoop();
 #endif
 
+    //stmTea5767FmLoop();//u8 uselineormic, u8 bypassEn)
+    //stmTea5767FmWithWm8731Loop(1, 1);
 
-	//stmTea5767FmLoop();//u8 uselineormic, u8 bypassEn)
-	//stmTea5767FmWithWm8731Loop(1, 1);
+    //tca8418_loop();
 
+    //stmSpiSt7735HY18LcdLoop();
+    //stmVL53L0X_loop();
 
-	//tca8418_loop();
+    //stm_RF24_6Star_loop();//stm_RF24_loop();
 
-	//stmSpiSt7735HY18LcdLoop();
-	//stmVL53L0X_loop();
+    //Avionics========================
+    //dtmf_loop();
+    //markerBeacon_loop();
+    //SelCal_loop();
+    //  SelCalProj_loop();
+    //Gimbal
 
+    //MOT_BLDC_BgcLoop();
+    // tca8418_loop();
+    //proj_mcdu_with_Keypad_LCD();
 
+    //proj_gpws();
+    // stmGpsLoop(2);//3); //OK
+    //proj_wireless_gps_clock(); //Kim Min-Ah
+    //stmArinc429_TransmitterLoop();
+    //stmArinc429_ReceiverLoop();
+    //tca8418_loop();
 
-	  //stm_RF24_6Star_loop();//stm_RF24_loop();
-
-
-
-	//Avionics========================
-	  //dtmf_loop();
-	 //markerBeacon_loop();
-	  //SelCal_loop();
-	//  SelCalProj_loop();
-	//Gimbal
-
-	 //MOT_BLDC_BgcLoop();
-	 // tca8418_loop();
-	//proj_mcdu_with_Keypad_LCD();
-
-
-	//proj_gpws();
-	 // stmGpsLoop(2);//3); //OK
-	//proj_wireless_gps_clock(); //Kim Min-Ah
-	//stmArinc429_TransmitterLoop();
-	//stmArinc429_ReceiverLoop();
-	//tca8418_loop();
-
-
-
-	  //stmRTCLoop();
-	 // stmBlinkyAndBeepLoop();
+    //stmRTCLoop();
+    // stmBlinkyAndBeepLoop();
 
 #if 0
 	//(1) Entry level Test ===================================
@@ -1314,208 +1316,199 @@ int main(void)
 #else
 
 #endif
-	//(3)=============== UART and RS485 ===========================================
-	//stmUsartTestLoop(); //USART1
-	//stmDmx512MasterLoop(); //DMX512-RS485
+    //(3)=============== UART and RS485 ===========================================
+    //stmUsartTestLoop(); //USART1
+    //stmDmx512MasterLoop(); //DMX512-RS485
 
-	//(5)============== I2C Sensors =======================================
-	//(5-1) LM75 I2C Temperature Sensor
-	//stmLm75TempSensorI2cLoop();
+    //(5)============== I2C Sensors =======================================
+    //(5-1) LM75 I2C Temperature Sensor
+    //stmLm75TempSensorI2cLoop();
 
 #if (USE_DISPLAY == USE_DISPLAY_OLED)
-	//(5-2) OLED Display with I2C
-	//stmOzOLED_init("HELLO KONG");
-	//stmOzOled_Loop();
+    //(5-2) OLED Display with I2C
+    //stmOzOLED_init("HELLO KONG");
+    //stmOzOled_Loop();
 #endif
 
+    //(5-3) Magneto Sensor with I2C
+    //stmLIS3MDL_Loop();
+    //stmHMC5883LLoop(); //Working
+    //stmQMC5883Loop();
 
+    //(5-4) Gyro Sensor with I2C
+    //stmLIS3DH_Loop(); //M35
+    //L3G4200Loop();      //angular gyro sensor
+    //L3GD20H_GYRO_Loop();//g-sensor
 
-	//(5-3) Magneto Sensor with I2C
-	//stmLIS3MDL_Loop();
-	//stmHMC5883LLoop(); //Working
-	//stmQMC5883Loop();
+    //(5-5) Accel
+    //stmLIS3DH_Loop();   //accelero
+    //stmADXL345Loop();   //accelero
 
-	//(5-4) Gyro Sensor with I2C
-	//stmLIS3DH_Loop(); //M35
-	//L3G4200Loop();      //angular gyro sensor
-	//L3GD20H_GYRO_Loop();//g-sensor
+    //(5-5) IMU+Gyro Sensor with I2C
+    //stmMPU6050Loop();//OK
 
-	//(5-5) Accel
-	//stmLIS3DH_Loop();   //accelero
-	//stmADXL345Loop();   //accelero
+    //(5-6) BMP280 Atmosphere Pressure Sensor
+    //stmBmp280Loop(); //altitude err???
+    //bmp180Loop();
 
-	//(5-5) IMU+Gyro Sensor with I2C
-	//stmMPU6050Loop();//OK
-
-	//(5-6) BMP280 Atmosphere Pressure Sensor
-	//stmBmp280Loop(); //altitude err???
-	//bmp180Loop();
-
-#if (USE_EXTI9_5 ==	USE_EXTI9_5_AP3216)
-	//(5-7) AP3216 Ambient Luminicent Sensor
-	//stmAp3216Loop();
-#elif (USE_EXTI9_5 ==	USE_EXTI9_5_APDS9960)
-	//(5-8) APDS9960 Gesture and Ambient Luminicent Sensor
-	//stmAPDS9960Loop();
+#if (USE_EXTI9_5 == USE_EXTI9_5_AP3216)
+    //(5-7) AP3216 Ambient Luminicent Sensor
+    //stmAp3216Loop();
+#elif (USE_EXTI9_5 == USE_EXTI9_5_APDS9960)
+    //(5-8) APDS9960 Gesture and Ambient Luminicent Sensor
+    //stmAPDS9960Loop();
 #endif
-	//(5-9) LADAR Distance Measuring Sensor
-	//stmVL53L0X_loop();//Working
+    //(5-9) LADAR Distance Measuring Sensor
+    //stmVL53L0X_loop();//Working
 
-	//(5-10) Dust sensor
-	//pm2008i2c_loop();
-	//GP2Y_Loop();
+    //(5-10) Dust sensor
+    //pm2008i2c_loop();
+    //GP2Y_Loop();
 
-	//(5-11) Humidity Sensor - Working
-	//si7021_loop();
-	//dh11_loop();
+    //(5-11) Humidity Sensor - Working
+    //si7021_loop();
+    //dh11_loop();
 
-	//(5-10) LED Driver
-	//stmPcf8574I2cLoop();//
-	//stmWs2812LEDloop(); //LED Array
-	//stmOzOled_Loop(); //OLED
-	//stmXPT2046Touch_Loop();
+    //(5-10) LED Driver
+    //stmPcf8574I2cLoop();//
+    //stmWs2812LEDloop(); //LED Array
+    //stmOzOled_Loop(); //OLED
+    //stmXPT2046Touch_Loop();
 
-	//stmOzOled_Loop();
-	//stmHt16K33Loop(); //Dot-matrix LED
+    //stmOzOled_Loop();
+    //stmHt16K33Loop(); //Dot-matrix LED
 
-	//MAX7219 7-Seg LED Driver
-	//stmMax7219_ClockLoop(); //--OK
-	//stmMax7219_4Digit_Loop(0);
+    //MAX7219 7-Seg LED Driver
+    //stmMax7219_ClockLoop(); //--OK
+    //stmMax7219_4Digit_Loop(0);
 
-	//stmMax7219_4Digit_Loop(1);
-	//stmMax7219_DotMatrix_Loop();
+    //stmMax7219_4Digit_Loop(1);
+    //stmMax7219_DotMatrix_Loop();
 
-	  //(5-11) CLCD
-	//  stmCLCD_Samsung_Loop();
-	//stmHd44780_Pcf8574_Clcd_Loop();
+    //(5-11) CLCD
+    //  stmCLCD_Samsung_Loop();
+    //stmHd44780_Pcf8574_Clcd_Loop();
 
+    //(6) SPI =================================
+    //(6-1) TC77 SPI Temperature Sensor
+    //stmTC77_ReadTemperatureLoop();
 
+    //(6-2) MCP3201/ MCP3208 ADC
+    //stmMCP3201Loop();		//ADC-SPI
+    //stmMCP3208AdcLoop();	//ADC-SPI
 
-	//(6) SPI =================================
-	//(6-1) TC77 SPI Temperature Sensor
-	//stmTC77_ReadTemperatureLoop();
+    //(7) ====== Actuator/Motors
+    //(7-1) Actuator-Relay Control
+    //stmRelayControlLoop();
 
-	//(6-2) MCP3201/ MCP3208 ADC
-	//stmMCP3201Loop();		//ADC-SPI
-	//stmMCP3208AdcLoop();	//ADC-SPI
+    //(7-2) Actuator-Solenoid Control
+    //stmDualSolenoidControlLoop();
 
+    //(7-3) Uipolar DC Motor
+    //stmUnipolarMotorLoop(); //Working
 
-	//(7) ====== Actuator/Motors
-	//(7-1) Actuator-Relay Control
-	//stmRelayControlLoop();
+    //(7-4) TB6612-Dual DC Motor Control
+    //stmTb6612Loop(); //Working
 
-	//(7-2) Actuator-Solenoid Control
-	//stmDualSolenoidControlLoop();
+    //MOT_BLDC_Mcp8063Loop();
+    // MOT_BLDC_Drv8313Loop();
+    //stmMcp8063BldcLoop();
+    //stmDrv8833Loop();
 
-	//(7-3) Uipolar DC Motor
-	//stmUnipolarMotorLoop(); //Working
+    //(7-5) Stepper
+    //stmStepper_Loop();//- Bitbang
 
-	//(7-4) TB6612-Dual DC Motor Control
-	//stmTb6612Loop(); //Working
+    //DRV8825Stepper_loop();
 
-	//MOT_BLDC_Mcp8063Loop();
-	// MOT_BLDC_Drv8313Loop();
-	//stmMcp8063BldcLoop();
-	//stmDrv8833Loop();
+    //stmA3967BipolarMotorLoop(); //OK
+    //stmX27_Vid29_Loop();//Instrument Pannel Guage - Step Motor
 
-	//(7-5) Stepper
-	//stmStepper_Loop();//- Bitbang
+    //(7-7) Servo Motor
+    //	MOT_ServoLoop();
 
+    //(7-8) AS5600 Motor Sensor
+    //stmAs5600_Loop();
 
-	 //DRV8825Stepper_loop();
+    //(8)Wireless (Options)
+    //(8-1) 433MHz
+    //stm433MHzWithUsartALoop();
+    //stm433MHzLoop();
+    //DS3231rtc_loop();
+    //ISL1208rtc_loop();
+    //stmGpsLoop(2);//3); //OK
+    //stm_RF24_loop(); //stmRF433txLoop();
 
+    //(9) IoT Applications
+    //TBD
 
+    //(10) Ethernet/Internet ===============================
+    //(10-1) Ethernet
+    //stmEnc28J60EtherSpiLoop();
 
-	//stmA3967BipolarMotorLoop(); //OK
-	//stmX27_Vid29_Loop();//Instrument Pannel Guage - Step Motor
+    //(10-2) Web over Ethernet
+    //stmUipHttpdLoop(); //with Enc28J60 Ethernet
 
-	//(7-7) Servo Motor
-//	MOT_ServoLoop();
-
-
-	//(7-8) AS5600 Motor Sensor
-	//stmAs5600_Loop();
-
-	//(8)Wireless (Options)
-	//(8-1) 433MHz
-	//stm433MHzWithUsartALoop();
-	//stm433MHzLoop();
-	//DS3231rtc_loop();
-	//ISL1208rtc_loop();
-	//stmGpsLoop(2);//3); //OK
-	//stm_RF24_loop(); //stmRF433txLoop();
-
-	//(9) IoT Applications
-	//TBD
-
-	//(10) Ethernet/Internet ===============================
-	//(10-1) Ethernet
-	//stmEnc28J60EtherSpiLoop();
-
-	//(10-2) Web over Ethernet
-	//stmUipHttpdLoop(); //with Enc28J60 Ethernet
-
-	//(10-3) Wiznet TCP/IP Controller with Ethernet/SPI
-	//W5XXX_loop();
+    //(10-3) Wiznet TCP/IP Controller with Ethernet/SPI
+    //W5XXX_loop();
 
 #if (PROCESSOR == PROCESSOR_STM32F107VCT)
-	//(10-4) -- Only For STM32F407/107
-	//	stmMdio407_107Loop();
-	//ETH_SimpleIP101Loop();//OK
-	//Ksz8794_Basic_Loop();//Ksz8794_Loop();//OK
-	//dtMdioLoop();//OK
-	//Lan9355_Loop(); //OK
-	//Lan9355_Tap_Loop(); //OK
-	//ETH_SimpleLoop();//OK
+    //(10-4) -- Only For STM32F407/107
+    //	stmMdio407_107Loop();
+    //ETH_SimpleIP101Loop();//OK
+    //Ksz8794_Basic_Loop();//Ksz8794_Loop();//OK
+    //dtMdioLoop();//OK
+    //Lan9355_Loop(); //OK
+    //Lan9355_Tap_Loop(); //OK
+    //ETH_SimpleLoop();//OK
 #endif
-	//stmMdioBitbangLoop();
+    //stmMdioBitbangLoop();
     //stmMdioGeneralPhy_Loop();
-	//(11) Automotive & IT Fusion Project ===================
-	//AutomotiveSensorActuatorProj();
+    //(11) Automotive & IT Fusion Project ===================
+    //AutomotiveSensorActuatorProj();
 
-	//(11-2) CAN
+    //(11-2) CAN
 
-	  //stmCanLoop();
+    //stmCanLoop();
 
-	//stmMCP2515Loop(); //CAN-SPI
+    //stmMCP2515Loop(); //CAN-SPI
 
-	//(11-3) LIN
-	//stmLinLoop();
-	//stmAMIS30621_TMC211_LinLoop(); //OK
+    //(11-3) LIN
+    //stmLinLoop();
+    //stmAMIS30621_TMC211_LinLoop(); //OK
 
-	//(11-4) Automotive Ethernet
-	//ETH_SimpleTJA1100Loop(); //--OK
-	//yRTL9Kmc_Loop();
-	//stmRTL9K_TestLoop();
+    //(11-4) Automotive Ethernet
+    //ETH_SimpleTJA1100Loop(); //--OK
+    //yRTL9Kmc_Loop();
+    //stmRTL9K_TestLoop();
 
-	//...
+    //...
 
-	//(4) DataCommun Basic Topics
-	//(4-1) FSK Modem
-	//tcm3105FskModemLoop(1); //NEED NOTE. USART1 can not support this 1200baud. We should use USART3 for this low speed modem.
+    //(4) DataCommun Basic Topics
+    //(4-1) FSK Modem
+    //tcm3105FskModemLoop(1); //NEED NOTE. USART1 can not support this 1200baud. We should use USART3 for this low speed modem.
 
-	//(4-2) DTMF
-	//stmDtmfGenLoop();
+    //(4-2) DTMF
+    //stmDtmfGenLoop();
 
-	//(20) ETC
-	//stmQeiLoop(); //OK
-	//stmMCP23008_Loop(); //I2C
-	//rngLoop();
-	//stmUartLoop(3, 9600);
-	//stmAd9833_FreqGenLoop();//OK
-	//stm_Si5328cLoop ();
+    //(20) ETC
+    //stmQeiLoop(); //OK
+    //stmMCP23008_Loop(); //I2C
+    //rngLoop();
+    //stmUartLoop(3, 9600);
+    //stmAd9833_FreqGenLoop();//OK
+    //stm_Si5328cLoop ();
 
-	//usbVcpLoop(); //Partially OK
+    //usbVcpLoop(); //Partially OK
 
-	//==projects ==================================================
+    //==projects ==================================================
 
-	//stmCanWithStepperPrj();
-	//stmLinWithStepperPrj();
+    //stmCanWithStepperPrj();
+    //stmLinWithStepperPrj();
 
-	//stm_Si5351aProjLoop();
-	//stm_Si5328cProjLoop();
-	//stmSi5351aLoop();
-/*	//stmSyncProjLoop(3);
+    //stm_Si5351aProjLoop();
+    //stm_Si5328cProjLoop();
+    //stmSi5351aLoop();
+    /*	//stmSyncProjLoop(3);
 	//stmSi5351aLoop();
 	//randNum32 = rngConfigAndGetRand();
 	//printf("\r\n=== randNum32=%d\r\n",randNum32);
@@ -1537,7 +1530,7 @@ int main(void)
     }
 */
 
-/*
+    /*
 		//===========for assigning different MAC/IP address per node.========
 		g_macaddrLsb = 1;
 	#if 0 //USE_UBUTTON
@@ -1605,7 +1598,3 @@ int main(void)
 	#endif
 */
 }
-
-
-
-

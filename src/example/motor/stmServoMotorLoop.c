@@ -5,46 +5,46 @@
 // 180: 2msec pulse
 // Need 5V power to servo motor
 
-	// PA1 - EN1
-	// PA2 - EN2 (nReset)
-	// PA3 - EN3 (EN2)
-	// PA4 - nSLEEP
-	// PA5 - nRESET (EN3)
+// PA1 - EN1
+// PA2 - EN2 (nReset)
+// PA3 - EN3 (EN2)
+// PA4 - nSLEEP
+// PA5 - nRESET (EN3)
 
-	//-- STM32F103C8T6
-	//[MOT0]
-	// IN1(TIM3_CH4) - PB1
-	// IN2(TIM3_CH3) - PB0
-	// IN3(TIM3_CH2) - PA7 	//IN3(PWM3) - PD14
-	//[MOT1]
-	// IN1(TIM3_CH1) - PA6	//PD12
-	// IN2(TIM2_CH4) - PA3
-	// IN3(TIM2_CH3) - PA2 //PD14
-	//[MOT2]
-	// IN1(TIM4_CH4) - PB9
-	// IN2(TIM2_CH2) - PA1
-	// IN3(TIM4_CH3) - PB8
+//-- STM32F103C8T6
+//[MOT0]
+// IN1(TIM3_CH4) - PB1
+// IN2(TIM3_CH3) - PB0
+// IN3(TIM3_CH2) - PA7 	//IN3(PWM3) - PD14
+//[MOT1]
+// IN1(TIM3_CH1) - PA6	//PD12
+// IN2(TIM2_CH4) - PA3
+// IN3(TIM2_CH3) - PA2 //PD14
+//[MOT2]
+// IN1(TIM4_CH4) - PB9
+// IN2(TIM2_CH2) - PA1
+// IN3(TIM4_CH3) - PB8
 
-#include <string.h>
-#include <stdarg.h>
-#include "yInc.h"
-#include <stdint.h>
 #include "stm32f10x.h"
+#include "yInc.h"
+#include <stdarg.h>
+#include <stdint.h>
+#include <string.h>
 
 #if (MOTOR_FOR == MOTOR_FOR_SERVO)
 
-#include "math.h"
 #include "init.h"
+#include "math.h"
 //#include "arm_math.h"
 
-#include "stm32f10x_tim.h"
+#include "cmdline.h"
+#include "misc.h"
+#include "stm32f10x_exti.h"
 #include "stm32f10x_gpio.h"
-#include "stm32f10x_usart.h"
 #include "stm32f10x_i2c.h"
 #include "stm32f10x_rcc.h"
-#include "stm32f10x_exti.h"
-#include "misc.h"
-#include "cmdline.h"
+#include "stm32f10x_tim.h"
+#include "stm32f10x_usart.h"
 
 /*
    MOTOR-0                    TIM3           N
@@ -73,16 +73,15 @@ void PWM_init(void) {
 }
 #endif
 
+#define High 0x01
+#define Low 0x00
 
-#define High		0x01
-#define Low			0x00
-
-#define PI 			3.1415926535897932384
+#define PI 3.1415926535897932384
 
 //main struct
-struct _MotServoCntr{
-	unsigned short angle;
-	uint32_t speed;// = 10;
+struct _MotServoCntr {
+    unsigned short angle;
+    uint32_t speed; // = 10;
 };
 
 struct _MotServoCntr MotServoCntr;
@@ -92,8 +91,8 @@ void rotate_back(void);
 void MOT_ServoInitPosition(void);
 void MOT_ServoControl(unsigned short angle);
 
-#define PWM_PRESCALER 	71 //---> 72MHz/(71+1) => 1MHz
-#define PWM_PERIOD 		20000 //1MHz/20000 => 50Hz (20msec)
+#define PWM_PRESCALER 71 //---> 72MHz/(71+1) => 1MHz
+#define PWM_PERIOD 20000 //1MHz/20000 => 50Hz (20msec)
 
 // PWM out pin config
 //-- STM32F103C8T6
@@ -111,15 +110,15 @@ void MOT_ServoControl(unsigned short angle);
 // IN3(TIM4_CH3) - PB8
 void PWM_PINx_init(void) // INx, IN - PWMpins
 {
-	GPIO_InitTypeDef init_AF;//
+    GPIO_InitTypeDef init_AF; //
 
-	//(1) PA6-TIM3 //PA7, PA6 - TIM3
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO,ENABLE);
+    //(1) PA6-TIM3 //PA7, PA6 - TIM3
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 
-	GPIO_StructInit(&init_AF);//
-	init_AF.GPIO_Mode = GPIO_Mode_AF_PP;//GPIO_Mode_AF;//
-	init_AF.GPIO_Speed = GPIO_Speed_10MHz;
-	init_AF.GPIO_Pin = GPIO_Pin_6;//	init_AF.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6;//
+    GPIO_StructInit(&init_AF); //
+    init_AF.GPIO_Mode = GPIO_Mode_AF_PP; //GPIO_Mode_AF;//
+    init_AF.GPIO_Speed = GPIO_Speed_10MHz;
+    init_AF.GPIO_Pin = GPIO_Pin_6; //	init_AF.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6;//
     GPIO_Init(GPIOA, &init_AF);
     //GPIO_PinRemapConfig(GPIO_Remap_TIM3, ENABLE); //GPIO_PinAFConfig(GPIOD, GPIO_PinSource12, GPIO_AF_TIM4);//
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
@@ -156,36 +155,36 @@ void PWM_PINx_init(void) // INx, IN - PWMpins
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 #endif
 }
- //PA0
+//PA0
 void user_button_init(void)
 {
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
-	GPIO_InitTypeDef User_But_ini;//
-	User_But_ini.GPIO_Mode = GPIO_Mode_IPD;//GPIO_Mode_IN;//
-	User_But_ini.GPIO_Pin = GPIO_Pin_0;//
-	User_But_ini.GPIO_Speed = GPIO_Speed_2MHz;
- 	//User_But_ini.GPIO_OType = GPIO_OType_PP;
-	//User_But_ini.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOA, &User_But_ini);//
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    GPIO_InitTypeDef User_But_ini; //
+    User_But_ini.GPIO_Mode = GPIO_Mode_IPD; //GPIO_Mode_IN;//
+    User_But_ini.GPIO_Pin = GPIO_Pin_0; //
+    User_But_ini.GPIO_Speed = GPIO_Speed_2MHz;
+    //User_But_ini.GPIO_OType = GPIO_OType_PP;
+    //User_But_ini.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOA, &User_But_ini); //
 
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);//SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
-	EXTI_InitTypeDef EXTI_InitStruct;
-	EXTI_InitStruct.EXTI_Line = EXTI_Line0;
-	EXTI_InitStruct.EXTI_LineCmd = ENABLE;
-	EXTI_InitStruct.EXTI_Mode=EXTI_Mode_Interrupt;
-	EXTI_InitStruct.EXTI_Trigger=EXTI_Trigger_Rising;
-	EXTI_Init(&EXTI_InitStruct);
-	NVIC_EnableIRQ(EXTI0_IRQn);
+    GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0); //SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource0);
+    EXTI_InitTypeDef EXTI_InitStruct;
+    EXTI_InitStruct.EXTI_Line = EXTI_Line0;
+    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
+    EXTI_Init(&EXTI_InitStruct);
+    NVIC_EnableIRQ(EXTI0_IRQn);
 }
 void led15_ini(void)
 {
-	//RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-	GPIO_InitTypeDef LED_pin;
-	GPIO_StructInit(&LED_pin);
-	LED_pin.GPIO_Pin = GPIO_Pin_15;
-	LED_pin.GPIO_Mode = GPIO_Mode_Out_PP;//GPIO_Mode_OUT;
-	GPIO_Init(GPIOD, &LED_pin);
+    //RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+    GPIO_InitTypeDef LED_pin;
+    GPIO_StructInit(&LED_pin);
+    LED_pin.GPIO_Pin = GPIO_Pin_15;
+    LED_pin.GPIO_Mode = GPIO_Mode_Out_PP; //GPIO_Mode_OUT;
+    GPIO_Init(GPIOD, &LED_pin);
 }
 //============ TIM =================================================================================
 //We will use 3 TIM for geneating PWM pulses to drive 3 BLDC Motors
@@ -248,24 +247,24 @@ void TIM2_ini(void)
 
 void TIM3_ini(void)
 {
-	TIM_TimeBaseInitTypeDef timer_init;
+    TIM_TimeBaseInitTypeDef timer_init;
 
-	TIM_DeInit(TIM3);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+    TIM_DeInit(TIM3);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
-	//Set 50Hz PWM
-	TIM_TimeBaseStructInit(&timer_init);
-	timer_init.TIM_Prescaler = PWM_PRESCALER; // ---> 72MHz/(71+1) => 1MHz
-	timer_init.TIM_Period = PWM_PERIOD;    //1MHz/20000 => 50Hz (20msec)
-	TIM_TimeBaseInit(TIM3, &timer_init);
+    //Set 50Hz PWM
+    TIM_TimeBaseStructInit(&timer_init);
+    timer_init.TIM_Prescaler = PWM_PRESCALER; // ---> 72MHz/(71+1) => 1MHz
+    timer_init.TIM_Period = PWM_PERIOD; //1MHz/20000 => 50Hz (20msec)
+    TIM_TimeBaseInit(TIM3, &timer_init);
 
-	//channel 1; -- PA6
-	TIM_OCInitTypeDef tim_oc_init1;
-	TIM_OCStructInit(&tim_oc_init1);
-	tim_oc_init1.TIM_Pulse = 0;
-	tim_oc_init1.TIM_OCMode = TIM_OCMode_PWM1;
-	tim_oc_init1.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OC1Init(TIM3, &tim_oc_init1);//
+    //channel 1; -- PA6
+    TIM_OCInitTypeDef tim_oc_init1;
+    TIM_OCStructInit(&tim_oc_init1);
+    tim_oc_init1.TIM_Pulse = 0;
+    tim_oc_init1.TIM_OCMode = TIM_OCMode_PWM1;
+    tim_oc_init1.TIM_OutputState = TIM_OutputState_Enable;
+    TIM_OC1Init(TIM3, &tim_oc_init1); //
 #if 0
 	//channel 2: M0-W
 	TIM_OCInitTypeDef tim_oc_init2;
@@ -291,9 +290,9 @@ void TIM3_ini(void)
 	tim_oc_init4.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OC4Init(TIM3, &tim_oc_init4);//
 #endif
-	TIM_Cmd(TIM3, ENABLE);
+    TIM_Cmd(TIM3, ENABLE);
 
-	//TIM_CtrlPWMOutputs(TIM3, ENABLE); //TIMx: where x can be 1, 8, 15, 16 or 17 to select the TIMx peripheral.
+    //TIM_CtrlPWMOutputs(TIM3, ENABLE); //TIMx: where x can be 1, 8, 15, 16 or 17 to select the TIMx peripheral.
 }
 #if 0
 void TIM4_ini(void)
@@ -367,90 +366,84 @@ void TIM1_ini(void) /// was TIM5(No in c8T6) Time measuring timer (internal usag
 
 void MOT_ServoControl(unsigned short angle)
 {
-	unsigned short ccr;
-	MotServoCntr.angle = angle;
-	// -------------->CCR      APR
-	// |               +--------+
-	// |               |        |
-	// +---------------+        +-...
-	// |<-------- Period ------>|
-	// ccr = 19000 - 1000*(angle)/180
-	//e.g. 0 degree = 1msec --> ccr = 19000 - 0 = 19000 --> 1msec
-	//e.g. 90 degree = 1.5msec --> ccr = 19000 - 500 = 18500 --> 1.5msec
-	//e.g. 180 degree = 2msec --> ccr = 19000 - 1000 = 18000 --> 2msec
-	// i.e., CCR for Duty...
+    unsigned short ccr;
+    MotServoCntr.angle = angle;
+    // -------------->CCR      APR
+    // |               +--------+
+    // |               |        |
+    // +---------------+        +-...
+    // |<-------- Period ------>|
+    // ccr = 19000 - 1000*(angle)/180
+    //e.g. 0 degree = 1msec --> ccr = 19000 - 0 = 19000 --> 1msec
+    //e.g. 90 degree = 1.5msec --> ccr = 19000 - 500 = 18500 --> 1.5msec
+    //e.g. 180 degree = 2msec --> ccr = 19000 - 1000 = 18000 --> 2msec
+    // i.e., CCR for Duty...
 
-	ccr = (unsigned short)((PWM_PERIOD-1000) - 1000*(angle)/180);
+    ccr = (unsigned short)((PWM_PERIOD - 1000) - 1000 * (angle) / 180);
 
-	//MOT0
-	//TIM3->CCR4 = PWM_PERIOD - (unsigned short)(MotServoCntr.Vinv1*PWM_PERIOD/VMOT)  ;
-  	//TIM3->CCR3 = PWM_PERIOD - (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
-  	//TIM3->CCR2 = PWM_PERIOD - (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
+    //MOT0
+    //TIM3->CCR4 = PWM_PERIOD - (unsigned short)(MotServoCntr.Vinv1*PWM_PERIOD/VMOT)  ;
+    //TIM3->CCR3 = PWM_PERIOD - (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
+    //TIM3->CCR2 = PWM_PERIOD - (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
 
-	//TIM3->CCR4 = (unsigned short)(MotServoCntr.Vinv1*PWM_PERIOD/VMOT)  ;
-  	//TIM3->CCR3 = (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
-  	//TIM3->CCR2 = (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
+    //TIM3->CCR4 = (unsigned short)(MotServoCntr.Vinv1*PWM_PERIOD/VMOT)  ;
+    //TIM3->CCR3 = (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
+    //TIM3->CCR2 = (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
 
-	//MOT1 - TIM3-CH1
+    //MOT1 - TIM3-CH1
 
-
-	TIM3->CCR1 = PWM_PERIOD - ccr ;
-  	//TIM2->CCR4 = (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
-  	//TIM2->CCR3 = (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
-  	//MOT2
-	//TIM4->CCR4 = (unsigned short)(MotServoCntr.Vinv1*PWM_PERIOD/VMOT)  ;
-  	//TIM2->CCR2 = (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
-  	//TIM4->CCR3 = (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
-
+    TIM3->CCR1 = PWM_PERIOD - ccr;
+    //TIM2->CCR4 = (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
+    //TIM2->CCR3 = (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
+    //MOT2
+    //TIM4->CCR4 = (unsigned short)(MotServoCntr.Vinv1*PWM_PERIOD/VMOT)  ;
+    //TIM2->CCR2 = (unsigned short)(MotServoCntr.Vinv2*PWM_PERIOD/VMOT)  ;
+    //TIM4->CCR3 = (unsigned short)(MotServoCntr.Vinv3*PWM_PERIOD/VMOT)  ;
 }
-
 
 //==================================================================================================================
 //CCR1 - A, CCR2 - B, CCR3 - C
 void MOT_ServoInitPosition(void) // establishing zero position, d-axis directed to A winding, theta = 90
 {
-	MOT_ServoControl(90);
+    MOT_ServoControl(90);
 }
 
 int MOT_ServoLoop(void)
 {
-	 PWM_PINx_init();
+    PWM_PINx_init();
 
-	 //TIM1_ini(); // Delay timer//TIM5_ini(); // Delay timer
-	 //TIM2_ini(); // PWM timer
-	 TIM3_ini(); // PWM timer
-	 //TIM4_ini(); // PWM timer
+    //TIM1_ini(); // Delay timer//TIM5_ini(); // Delay timer
+    //TIM2_ini(); // PWM timer
+    TIM3_ini(); // PWM timer
+    //TIM4_ini(); // PWM timer
 
-	 MOT_ServoInitPosition();
+    MOT_ServoInitPosition();
 
-	 while(1)
-	 {
-  		printf("angle=%u\r\n",MotServoCntr.angle);
-  		MOT_ServoControl(MotServoCntr.angle);
+    while (1) {
+        printf("angle=%u\r\n", MotServoCntr.angle);
+        MOT_ServoControl(MotServoCntr.angle);
 
-		delayms(100);
+        delayms(100);
 
-		if(MotServoCntr.angle < 180){
-			MotServoCntr.angle += 10;
-		}else {
-			MotServoCntr.angle = 0;
-		}
-	}
+        if (MotServoCntr.angle < 180) {
+            MotServoCntr.angle += 10;
+        } else {
+            MotServoCntr.angle = 0;
+        }
+    }
 }
 
 void Servo_control(unsigned short angle)
 {
-	MOT_ServoControl(angle);
+    MOT_ServoControl(angle);
 }
 
 void Servo_Setup()
 {
-	PWM_PINx_init();
-	TIM3_ini();
+    PWM_PINx_init();
+    TIM3_ini();
 }
 
-
 #endif
-
 
 #endif

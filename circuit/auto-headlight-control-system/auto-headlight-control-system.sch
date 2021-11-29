@@ -48,8 +48,6 @@ GND_1
 Text GLabel 3900 4650 2    50   Input ~ 0
 3V3_1
 Wire Wire Line
-	2500 2650 2700 2650
-Wire Wire Line
 	2500 2750 2700 2750
 Wire Wire Line
 	2700 2850 2500 2850
@@ -68,8 +66,6 @@ Wire Wire Line
 Wire Wire Line
 	2350 4050 2550 4050
 Wire Wire Line
-	3750 3700 3900 3700
-Wire Wire Line
 	3750 3800 3900 3800
 Wire Wire Line
 	3750 4100 3900 4100
@@ -79,8 +75,6 @@ Wire Wire Line
 	3750 4550 3900 4550
 Wire Wire Line
 	3750 4650 3900 4650
-Wire Wire Line
-	3750 4750 3900 4750
 Wire Wire Line
 	3750 4850 3900 4850
 Text GLabel 7100 2100 2    50   Input ~ 0
@@ -135,7 +129,7 @@ U 1 1 619587F7
 P 5400 2500
 F 0 "R1" H 5470 2546 50  0000 L CNN
 F 1 "100ohm" H 5470 2455 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 5330 2500 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical" V 5330 2500 50  0001 C CNN
 F 3 "~" H 5400 2500 50  0001 C CNN
 	1    5400 2500
 	1    0    0    -1  
@@ -345,4 +339,10 @@ F 3 "" H 7200 3500 50  0001 C CNN
 	1    7200 3500
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	3750 4750 3900 4750
+Wire Wire Line
+	2500 2650 2700 2650
+Wire Wire Line
+	3750 3700 3900 3700
 $EndSCHEMATC
